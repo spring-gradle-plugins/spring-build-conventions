@@ -21,44 +21,56 @@ import java.io.File;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.file.SourceDirectorySet;
+import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.javadoc.Javadoc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Rob Winch
  */
 public class JavadocApiPlugin implements Plugin<Project> {
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public void apply(Project project) {
-		Javadoc javadoc = project.getTasks().create("api", Javadoc.class);
+		logger.info("Applied");
+		Javadoc api = project.getTasks().create("api", Javadoc.class);
 
-		javadoc.setGroup("Documentation");
-		javadoc.setDescription("Generates aggregated Javadoc API documentation.");
+		api.setGroup("Documentation");
+		api.setDescription("Generates aggregated Javadoc API documentation.");
 
 		for (Project subproject : project.getSubprojects()) {
-			addJavaSourceSet(javadoc, subproject);
+			addJavaSourceSet(api, subproject);
 		}
 
 		if (project.getSubprojects().isEmpty()) {
-			addJavaSourceSet(javadoc, project);
+			addJavaSourceSet(api, project);
 		}
 
-		javadoc.setMaxMemory("1024m");
-		javadoc.setDestinationDir(new File(project.getBuildDir(), "api"));
+		api.setMaxMemory("1024m");
+		api.setDestinationDir(new File(project.getBuildDir(), "api"));
 	}
 
-	private void addJavaSourceSet(final Javadoc javadoc, final Project project) {
-		project.getPlugins().withType(JavaPlugin.class).all(new Action<JavaPlugin>() {
+	private void addJavaSourceSet(final Javadoc api, final Project project) {
+		logger.info("Try add sources for {}", project);
+		api.doFirst(new Action<Task>() {
 			@Override
-			public void execute(JavaPlugin plugin) {
-				JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
-				SourceSet mainSourceSet = java.getSourceSets().getByName("main");
-				javadoc.setSource(javadoc.getSource().plus(mainSourceSet.getAllJava()));
+			public void execute(Task task) {
+				project.getPlugins().withType(JavaPlugin.class).all(new Action<JavaPlugin>() {
+					@Override
+					public void execute(JavaPlugin plugin) {
+						logger.info("Added sources for {}", project);
+
+						JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
+						SourceSet mainSourceSet = java.getSourceSets().getByName("main");
+
+						api.setSource(api.getSource().plus(mainSourceSet.getAllJava()));
+					}
+				});
 			}
 		});
 	}

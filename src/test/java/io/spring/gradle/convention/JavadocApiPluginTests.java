@@ -16,19 +16,26 @@
 
 package io.spring.gradle.convention;
 
-import org.apache.commons.io.FileUtils;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.function.Consumer;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.file.SourceDirectorySet;
+import org.gradle.api.internal.tasks.ContextAwareTaskAction;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.javadoc.Javadoc;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.After;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-
-import java.io.File;
 
 /**
  * @author Rob Winch
@@ -38,7 +45,7 @@ public class JavadocApiPluginTests {
 
 	@After
 	public void cleanup() throws Exception {
-		if(rootProject != null) {
+		if (rootProject != null) {
 			FileUtils.deleteDirectory(rootProject.getProjectDir());
 		}
 	}
@@ -85,28 +92,29 @@ public class JavadocApiPluginTests {
 	public void applyWhenChildProjectThenSourcePopulated() throws Exception {
 		rootProject = ProjectBuilder.builder().build();
 
-		Project api = ProjectBuilder
-			.builder()
-			.withName("api")
-			.withParent(rootProject)
-			.build();
+		Project api = ProjectBuilder.builder().withName("api").withParent(rootProject).build();
 
-		Project impl = ProjectBuilder
-				.builder()
-				.withName("impl")
-				.withParent(rootProject)
-				.build();
+		Project impl = ProjectBuilder.builder().withName("impl").withParent(rootProject).build();
 
 		rootProject.getPlugins().apply(JavadocApiPlugin.class);
 
-		for(Project p : rootProject.getSubprojects()) {
-			FileUtils.touch(p.file("src/main/java/File.java"));
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		for (Project p : rootProject.getSubprojects()) {
+			File file = p.file("src/main/java/File.java");
+			FileUtils.touch(file);
+			InputStream input = loader.getResourceAsStream("File.java.txt");
+			IOUtils.copy(input,
+					new FileOutputStream(file));
 			p.getPlugins().apply(JavaPlugin.class);
 		}
 
-		Javadoc apiTask = (Javadoc) rootProject.getTasks().getByPath("api");
+		final Javadoc apiTask = (Javadoc) rootProject.getTasks().getByPath("api");
 		SourceDirectorySet apiJavaSourceSets = getJavaSourceSets(api);
 		SourceDirectorySet implJavaSourceSets = getJavaSourceSets(impl);
+
+		for(Action<? super Task> a : apiTask.getActions()) {
+			a.execute(apiTask);
+		}
 
 		assertThat(apiTask.getSource()).isNotEmpty();
 		assertThat(apiTask.getSource().getFiles()).containsAll(apiJavaSourceSets.getFiles());
@@ -135,12 +143,7 @@ public class JavadocApiPluginTests {
 	public void applyWhenRootProjectJavaThenRootNotPopulated() throws Exception {
 		rootProject = ProjectBuilder.builder().build();
 
-		Project api = ProjectBuilder
-				.builder()
-				.withName("api")
-				.withParent(rootProject)
-				.build();
-
+		Project api = ProjectBuilder.builder().withName("api").withParent(rootProject).build();
 
 		rootProject.getPlugins().apply(JavadocApiPlugin.class);
 

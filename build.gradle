@@ -3,6 +3,7 @@ plugins {
 }
 
 apply plugin: 'java'
+apply plugin: 'maven'
 
 group 'io.spring.gradle'
 version '1.0-SNAPSHOT'
