@@ -8,7 +8,7 @@ apply plugin: 'maven'
 group 'io.spring.gradle'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.8
 
 repositories {
   mavenCentral()
