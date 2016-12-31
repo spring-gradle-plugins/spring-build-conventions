@@ -8,11 +8,13 @@ import org.gradle.api.plugins.MavenPlugin;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.api.tasks.javadoc.Javadoc;
+import org.gradle.plugins.signing.SigningExtension;
 import org.gradle.plugins.signing.SigningPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SpringMavenPlugin implements Plugin<Project> {
+	private static final String ARCHIVES = "archives";
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
@@ -32,8 +34,11 @@ public class SpringMavenPlugin implements Plugin<Project> {
 		sourcesJar.setClassifier("sources");
 		sourcesJar.from(mainSourceSet.getAllSource());
 
-		project.getArtifacts().add("archives", javadocJar);
-		project.getArtifacts().add("archives", sourcesJar);
+		project.getArtifacts().add(ARCHIVES, javadocJar);
+		project.getArtifacts().add(ARCHIVES, sourcesJar);
+
+		SigningExtension sign = project.getExtensions().findByType(SigningExtension.class);
+		sign.sign(project.getConfigurations().getByName(ARCHIVES));
 	}
 
 }
