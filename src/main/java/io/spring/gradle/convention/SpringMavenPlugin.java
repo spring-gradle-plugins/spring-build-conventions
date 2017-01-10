@@ -2,14 +2,13 @@ package io.spring.gradle.convention;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.XmlProvider;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
+import org.gradle.api.artifacts.maven.GroovyMavenDeployer;
 import org.gradle.api.artifacts.maven.MavenDeployment;
 import org.gradle.api.artifacts.maven.MavenPom;
 import org.gradle.api.artifacts.maven.MavenResolver;
@@ -18,8 +17,6 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.MavenPlugin;
 import org.gradle.api.plugins.MavenRepositoryHandlerConvention;
-import org.gradle.api.publication.maven.internal.deployer.DefaultGroovyMavenDeployer;
-import org.gradle.api.publication.maven.internal.deployer.MavenRemoteRepository;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.Upload;
 import org.gradle.api.tasks.bundling.Jar;
@@ -62,9 +59,15 @@ public class SpringMavenPlugin implements Plugin<Project> {
 		sign.sign(project.getConfigurations().getByName(ARCHIVES));
 
 		MavenResolver installResolver = mavenRepositoryForTask(project, "install").mavenInstaller();
+		installResolver.beforeDeployment(new Action<MavenDeployment>() {
+			@Override
+			public void execute(MavenDeployment deployment) {
+				sign.signPom(deployment);
+			}
+		});
 		configurePom(project, installResolver.getPom());
 
-		DefaultGroovyMavenDeployer uploadDeployer = (DefaultGroovyMavenDeployer) mavenRepositoryForTask(project, "uploadArchives").mavenDeployer();
+		GroovyMavenDeployer uploadDeployer =  mavenRepositoryForTask(project, "uploadArchives").mavenDeployer();
 		uploadDeployer.beforeDeployment(new Action<MavenDeployment>() {
 			@Override
 			public void execute(MavenDeployment deployment) {
@@ -220,7 +223,6 @@ public class SpringMavenPlugin implements Plugin<Project> {
 		return "" + p.getProperty("getScope") + p.getProperty("isOptional") + p.getProperty("getGroupId") + p.getProperty("getArtifactId"); // "$dep.scope:$dep.optional:$dep.groupId:$dep.artifactId";
 	}
 
-
 	private static class PropertyEditor {
 		private final Object obj;
 
@@ -228,6 +230,7 @@ public class SpringMavenPlugin implements Plugin<Project> {
 			this.obj = obj;
 		}
 
+		@SuppressWarnings("unchecked")
 		<T> T getProperty(String propertyName) {
 			try {
 				return (T) obj.getClass().getMethod(propertyName).invoke(obj);
