@@ -2,12 +2,15 @@ package io.spring.gradle.convention;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.XmlProvider;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
+import org.gradle.api.artifacts.maven.MavenDeployment;
 import org.gradle.api.artifacts.maven.MavenPom;
 import org.gradle.api.artifacts.maven.MavenResolver;
 import org.gradle.api.internal.plugins.DslObject;
@@ -15,6 +18,8 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.plugins.MavenPlugin;
 import org.gradle.api.plugins.MavenRepositoryHandlerConvention;
+import org.gradle.api.publication.maven.internal.deployer.DefaultGroovyMavenDeployer;
+import org.gradle.api.publication.maven.internal.deployer.MavenRemoteRepository;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.Upload;
 import org.gradle.api.tasks.bundling.Jar;
@@ -56,12 +61,35 @@ public class SpringMavenPlugin implements Plugin<Project> {
 		SigningExtension sign = project.getExtensions().findByType(SigningExtension.class);
 		sign.sign(project.getConfigurations().getByName(ARCHIVES));
 
-		Upload uploadArchives = (Upload) project.getTasks().findByName("install");
+		MavenResolver installResolver = mavenRepositoryForTask(project, "install").mavenInstaller();
+		configurePom(project, installResolver.getPom());
+
+		DefaultGroovyMavenDeployer uploadDeployer = (DefaultGroovyMavenDeployer) mavenRepositoryForTask(project, "uploadArchives").mavenDeployer();
+		uploadDeployer.beforeDeployment(new Action<MavenDeployment>() {
+			@Override
+			public void execute(MavenDeployment deployment) {
+				sign.signPom(deployment);
+			}
+		});
+		Map authentication = new HashMap();
+		authentication.put("userName", project.getProperties().get("ossrhUsername"));
+		authentication.put("password", project.getProperties().get("ossrhPassword"));
+
+		MavenRemoteRepository snapshotRepository = new MavenRemoteRepository();
+		snapshotRepository.setUrl("https://oss.sonatype.org/content/repositories/snapshots/");
+		snapshotRepository.authentication(authentication);
+		uploadDeployer.setSnapshotRepository(snapshotRepository);
+		configurePom(project, uploadDeployer.getPom());
+	}
+
+	private MavenRepositoryHandlerConvention mavenRepositoryForTask(Project project, String taskName) {
+		Upload uploadArchives = (Upload) project.getTasks().findByName(taskName);
 		RepositoryHandler uploadRepositories = uploadArchives.getRepositories();
 
-		MavenRepositoryHandlerConvention mavenRepositories= new DslObject(uploadRepositories).getConvention().getPlugin(MavenRepositoryHandlerConvention.class);
-		MavenResolver mavenInstaller = mavenRepositories.mavenInstaller();
-		MavenPom pom = mavenInstaller.getPom();
+		return new DslObject(uploadRepositories).getConvention().getPlugin(MavenRepositoryHandlerConvention.class);
+	}
+
+	private void configurePom(Project project, MavenPom pom) {
 
 		for(Object o : pom.getDependencies()) {
 			PropertyEditor p = new PropertyEditor(o);
@@ -86,11 +114,22 @@ public class SpringMavenPlugin implements Plugin<Project> {
 		pom.withXml(new Action<XmlProvider>() {
 			@Override
 			public void execute(XmlProvider xml) {
+				boolean isWar = project.hasProperty("war");
+				String projectVersion = String.valueOf(project.getVersion());
+				boolean isSnapshot = projectVersion.endsWith("-SNAPSHOT");
+				boolean isRelease = projectVersion.endsWith(".RELEASE");
+				boolean isMilestone = !isSnapshot && !isRelease;
+
 				String rootProjectName = project.getRootProject().getName();
 				XmlDocument doc = new XmlDocument((Document) xml.asElement().getParentNode());
-				doc.findNode("version").insertElementWithText("name", project.getName());
+
+				XmlNode version = doc.findNode("version");
+				version.insertElementWithText("name", project.getName());
 
 				XmlNode dependencies = doc.findNode("dependencies");
+				if(isWar) {
+					dependencies.insertElementWithText("packaging", "war");
+				}
 				dependencies.insertElementWithText("description", project.getName());
 				dependencies.insertElementWithText("url", "https://spring.io/" + rootProjectName);
 
@@ -108,6 +147,25 @@ public class SpringMavenPlugin implements Plugin<Project> {
 				scm.addChild("connection", "scm:git:git://github.com/spring-projects/" + rootProjectName);
 				scm.addChild("developerConnection", "scm:git:git://github.com/spring-projects/" + rootProjectName);
 
+				XmlNode developer = dependencies.insertElement("developers").addChild("developer", null);
+				developer.addChild("id", "rwinch");
+				developer.addChild("name", "Rob Winch");
+				developer.addChild("email", "rwinch@gopivotal.com");
+
+				XmlNode project = doc.findNode("project");
+				if(isWar) {
+					project.addChild("properties", null).addChild("m2eclipse.wtp.contextRoot", "/");
+				}
+
+				if(isSnapshot) {
+					XmlNode repository = project.addChild("repositories", null).addChild("repository", null);
+					repository.addChild("id", "spring-snapshot");
+					repository.addChild("url", "https://repo.spring.io/snapshot");
+				} else if(isMilestone) {
+					XmlNode repository = project.addChild("repositories", null).addChild("repository", null);
+					repository.addChild("id", "spring-milestone");
+					repository.addChild("url", "https://repo.spring.io/milestone");
+				}
 			}
 		});
 	}
@@ -132,6 +190,7 @@ public class SpringMavenPlugin implements Plugin<Project> {
 			Node node = existingNodes.item(0);
 			return new XmlNode(this, node);
 		}
+
 	}
 
 	private static class XmlNode {

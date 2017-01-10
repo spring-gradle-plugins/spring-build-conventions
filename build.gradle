@@ -3,6 +3,7 @@ plugins {
 }
 
 apply plugin: 'java'
+apply plugin: 'groovy'
 apply plugin: 'maven'
 
 group 'io.spring.gradle'
@@ -25,6 +26,10 @@ gradlePlugin {
     simplePlugin {
       id = "io.spring.convention.javadoc-api"
       implementationClass = "io.spring.gradle.convention.JavadocApiPlugin"
+    }
+	simplePlugin {
+      id = "io.spring.convention.spring-maven"
+      implementationClass = "io.spring.gradle.convention.SpringMavenPlugin"
     }
   }
 }
