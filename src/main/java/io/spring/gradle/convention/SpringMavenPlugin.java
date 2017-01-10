@@ -71,15 +71,9 @@ public class SpringMavenPlugin implements Plugin<Project> {
 				sign.signPom(deployment);
 			}
 		});
-		Map authentication = new HashMap();
-		authentication.put("userName", project.getProperties().get("ossrhUsername"));
-		authentication.put("password", project.getProperties().get("ossrhPassword"));
-
-		MavenRemoteRepository snapshotRepository = new MavenRemoteRepository();
-		snapshotRepository.setUrl("https://oss.sonatype.org/content/repositories/snapshots/");
-		snapshotRepository.authentication(authentication);
-		uploadDeployer.setSnapshotRepository(snapshotRepository);
 		configurePom(project, uploadDeployer.getPom());
+
+		project.getPluginManager().apply("io.spring.convention.ossrh");
 	}
 
 	private MavenRepositoryHandlerConvention mavenRepositoryForTask(Project project, String taskName) {
