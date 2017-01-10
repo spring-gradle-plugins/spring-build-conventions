@@ -32,5 +32,9 @@ gradlePlugin {
 			id = "io.spring.convention.spring-maven"
 			implementationClass = "io.spring.gradle.convention.SpringMavenPlugin"
 		}
+		simplePlugin {
+			id = "io.spring.convention.ossrh"
+			implementationClass = "io.spring.gradle.convention.OssrhPlugin"
+		}
 	}
 }
