@@ -17,11 +17,11 @@
 package io.spring.gradle.convention;
 
 import java.io.File;
+import java.util.Set;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
@@ -43,11 +43,12 @@ public class JavadocApiPlugin implements Plugin<Project> {
 		api.setGroup("Documentation");
 		api.setDescription("Generates aggregated Javadoc API documentation.");
 
-		for (Project subproject : project.getSubprojects()) {
+		Set<Project> subprojects = project.getRootProject().getSubprojects();
+		for (Project subproject : subprojects) {
 			addJavaSourceSet(api, subproject);
 		}
 
-		if (project.getSubprojects().isEmpty()) {
+		if (subprojects.isEmpty()) {
 			addJavaSourceSet(api, project);
 		}
 
@@ -57,20 +58,15 @@ public class JavadocApiPlugin implements Plugin<Project> {
 
 	private void addJavaSourceSet(final Javadoc api, final Project project) {
 		logger.info("Try add sources for {}", project);
-		api.doFirst(new Action<Task>() {
+		project.getPlugins().withType(JavaPlugin.class).all(new Action<JavaPlugin>() {
 			@Override
-			public void execute(Task task) {
-				project.getPlugins().withType(JavaPlugin.class).all(new Action<JavaPlugin>() {
-					@Override
-					public void execute(JavaPlugin plugin) {
-						logger.info("Added sources for {}", project);
+			public void execute(JavaPlugin plugin) {
+				logger.info("Added sources for {}", project);
 
-						JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
-						SourceSet mainSourceSet = java.getSourceSets().getByName("main");
+				JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
+				SourceSet mainSourceSet = java.getSourceSets().getByName("main");
 
-						api.setSource(api.getSource().plus(mainSourceSet.getAllJava()));
-					}
-				});
+				api.setSource(api.getSource().plus(mainSourceSet.getAllJava()));
 			}
 		});
 	}
