@@ -17,7 +17,10 @@
 package io.spring.gradle.convention;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -34,6 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JavadocApiPlugin implements Plugin<Project> {
 	Logger logger = LoggerFactory.getLogger(getClass());
+	Set<Pattern> excludes = Collections.singleton(Pattern.compile("test"));
 
 	@Override
 	public void apply(Project project) {
@@ -56,7 +60,23 @@ public class JavadocApiPlugin implements Plugin<Project> {
 		api.setDestinationDir(new File(project.getBuildDir(), "api"));
 	}
 
+	public void setExcludes(String... excludes) {
+		if(excludes == null) {
+			this.excludes = Collections.emptySet();
+		}
+		this.excludes = new HashSet<Pattern>(excludes.length);
+		for(String exclude : excludes) {
+			this.excludes.add(Pattern.compile(exclude));
+		}
+	}
+
 	private void addJavaSourceSet(final Javadoc api, final Project project) {
+		for(Pattern exclude : excludes) {
+			if(exclude.matcher(project.getName()).matches()) {
+				logger.info("Skipping {} because it is excluded by {}", project, exclude);
+				return;
+			}
+		}
 		logger.info("Try add sources for {}", project);
 		project.getPlugins().withType(JavaPlugin.class).all(new Action<JavaPlugin>() {
 			@Override
