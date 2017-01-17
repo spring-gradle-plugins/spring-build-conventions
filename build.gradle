@@ -14,10 +14,11 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-	mavenCentral()
+	jcenter()
 }
 
 dependencies {
+	compile 'org.hidetake:gradle-ssh-plugin:2.7.0'
 	compile localGroovy()
 	testCompile 'junit:junit:4.12'
 	testCompile 'org.assertj:assertj-core:3.5.2'
