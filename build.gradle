@@ -15,10 +15,12 @@ sourceCompatibility = 1.8
 
 repositories {
 	jcenter()
+	maven { url 'https://repo.spring.io/plugins-release' }
 }
 
 dependencies {
 	compile 'org.hidetake:gradle-ssh-plugin:2.7.0'
+	compile 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
 	compile localGroovy()
 	testCompile 'junit:junit:4.12'
 	testCompile 'org.assertj:assertj-core:3.5.2'

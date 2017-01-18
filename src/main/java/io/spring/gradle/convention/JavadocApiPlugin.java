@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.javadoc.Javadoc;
@@ -42,13 +41,16 @@ public class JavadocApiPlugin implements Plugin<Project> {
 	@Override
 	public void apply(Project project) {
 		logger.info("Applied");
+		Project rootProject = project.getRootProject();
+
 		Javadoc api = project.getTasks().create("api", Javadoc.class);
 
 		api.setGroup("Documentation");
 		api.setDescription("Generates aggregated Javadoc API documentation.");
 
-		Set<Project> subprojects = project.getRootProject().getSubprojects();
+		Set<Project> subprojects = rootProject.getSubprojects();
 		for (Project subproject : subprojects) {
+			System.out.println("Trying JavadocApi .. " + subproject.getName());
 			addJavaSourceSet(api, subproject);
 		}
 
@@ -78,11 +80,11 @@ public class JavadocApiPlugin implements Plugin<Project> {
 			}
 		}
 		logger.info("Try add sources for {}", project);
-		project.getPlugins().withType(JavaPlugin.class).all(new Action<JavaPlugin>() {
+		project.getPlugins().withType(SpringModulePlugin.class).all(new Action<SpringModulePlugin>() {
 			@Override
-			public void execute(JavaPlugin plugin) {
+			public void execute(SpringModulePlugin plugin) {
 				logger.info("Added sources for {}", project);
-
+				System.out.println("Adding .. " + project.getName());
 				JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
 				SourceSet mainSourceSet = java.getSourceSets().getByName("main");
 

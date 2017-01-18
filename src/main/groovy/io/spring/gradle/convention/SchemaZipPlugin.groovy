@@ -35,6 +35,7 @@ public class SchemaZipPlugin implements Plugin<Project> {
 					}
 					assert xsdFile != null
 					schemaZip.into (shortName) {
+						duplicatesStrategy 'exclude'
 						from xsdFile.path
 					}
 				}
