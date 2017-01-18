@@ -40,6 +40,8 @@ public class SpringModulePlugin implements Plugin<Project> {
 		pluginManager.apply(PropDepsPlugin.class);
 		pluginManager.apply(PropDepsEclipsePlugin.class);
 		pluginManager.apply(PropDepsIdeaPlugin.class);
+		pluginManager.apply("io.spring.convention.springdependencymangement");
+
 		pluginManager.apply(SpringMavenPlugin.class);
 		pluginManager.apply("io.spring.convention.springio");
 	}
