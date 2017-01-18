@@ -34,7 +34,6 @@ public class SpringModulePlugin implements Plugin<Project> {
 	@Override
 	public void apply(Project project) {
 		PluginManager pluginManager = project.getPluginManager();
-
 		pluginManager.apply(JavaPlugin.class);
 		pluginManager.apply(EclipseWtpPlugin.class);
 		pluginManager.apply(IdeaPlugin.class);
@@ -42,5 +41,6 @@ public class SpringModulePlugin implements Plugin<Project> {
 		pluginManager.apply(PropDepsEclipsePlugin.class);
 		pluginManager.apply(PropDepsIdeaPlugin.class);
 		pluginManager.apply(SpringMavenPlugin.class);
+		pluginManager.apply("io.spring.convention.springio");
 	}
 }
