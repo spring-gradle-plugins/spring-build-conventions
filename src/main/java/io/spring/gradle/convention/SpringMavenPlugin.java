@@ -87,7 +87,6 @@ public class SpringMavenPlugin implements Plugin<Project> {
 	}
 
 	private void configurePom(Project project, MavenPom pom) {
-
 		for(Object o : pom.getDependencies()) {
 			PropertyEditor p = new PropertyEditor(o);
 			String scope = p.getProperty("getScope");
@@ -124,6 +123,9 @@ public class SpringMavenPlugin implements Plugin<Project> {
 				version.insertElementWithText("name", project.getName());
 
 				XmlNode dependencies = doc.findNode("dependencies");
+				if(dependencies == null) {
+					dependencies = doc.findNode("name");
+				}
 				if(isWar) {
 					dependencies.insertElementWithText("packaging", "war");
 				}
@@ -184,6 +186,9 @@ public class SpringMavenPlugin implements Plugin<Project> {
 
 		public XmlNode findNode(String name) {
 			NodeList existingNodes = doc.getElementsByTagName(name);
+			if(existingNodes.getLength() == 0) {
+				return null;
+			}
 			Node node = existingNodes.item(0);
 			return new XmlNode(this, node);
 		}
