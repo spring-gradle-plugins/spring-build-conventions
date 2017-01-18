@@ -50,7 +50,6 @@ public class JavadocApiPlugin implements Plugin<Project> {
 
 		Set<Project> subprojects = rootProject.getSubprojects();
 		for (Project subproject : subprojects) {
-			System.out.println("Trying JavadocApi .. " + subproject.getName());
 			addJavaSourceSet(api, subproject);
 		}
 
@@ -84,7 +83,7 @@ public class JavadocApiPlugin implements Plugin<Project> {
 			@Override
 			public void execute(SpringModulePlugin plugin) {
 				logger.info("Added sources for {}", project);
-				System.out.println("Adding .. " + project.getName());
+
 				JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
 				SourceSet mainSourceSet = java.getSourceSets().getByName("main");
 

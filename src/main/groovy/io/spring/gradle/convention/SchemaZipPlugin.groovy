@@ -17,13 +17,11 @@ public class SchemaZipPlugin implements Plugin<Project> {
 			"XSDs for deployment at static.springframework.org/schema."
 
 		project.rootProject.subprojects.each { module ->
-			println "evaluating $module.name"
 
 			module.getPlugins().withType(JavaPlugin.class).all {
 				def Properties schemas = new Properties();
 
 				module.sourceSets.main.resources.find {
-					println "  resource $it"
 					it.path.endsWith('META-INF/spring.schemas')
 				}?.withInputStream { schemas.load(it) }
 
