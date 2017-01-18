@@ -29,6 +29,7 @@ public class DeployDocsPlugin implements Plugin<Project> {
 		}
 
 		project.task('deployDocs') {
+			dependsOn 'docsZip'
 			doFirst {
 				project.ssh.run {
 					session(project.remotes.docs) {
