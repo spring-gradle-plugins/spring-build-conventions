@@ -19,6 +19,13 @@ public class SpringDependencyManagementConventionPlugin implements Plugin<Projec
 	public void apply(Project project) {
 		project.getPluginManager().apply(DependencyManagementPlugin)
 
+		String platformBomVersion = project.springIoVersion
+		project.dependencyManagement {
+			imports {
+				mavenBom("io.spring.platform:platform-bom:${platformBomVersion}")
+			}
+		}
+
 		File dependencyManagementFile = project.rootProject.file("gradle/dependency-management.properties")
 		if(!dependencyManagementFile.exists()) {
 			return;
