@@ -29,7 +29,7 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 			}
 		}
 
-		project.tasks.create("integrationTest", Test) {
+		Task integrationTest = project.tasks.create("integrationTest", Test) {
 			dependsOn 'jar'
 			testClassesDir = project.sourceSets.integrationTest.output.classesDir
 			classpath = project.sourceSets.integrationTest.runtimeClasspath
@@ -38,6 +38,7 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 				junitXml.destination = project.file("$project.buildDir/integration-test-results/")
 			}
 		}
+		project.tasks.check.dependsOn integrationTest
 
 		project.tasks.withType(GroovyPlugin) {
 			project.sourceSets {
