@@ -22,6 +22,7 @@ dependencies {
 	compile 'org.hidetake:gradle-ssh-plugin:2.7.0'
 	compile 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
 	compile 'io.spring.gradle:spring-io-plugin:0.0.6.RELEASE'
+	compile 'org.akhikhl.gretty:gretty:1.4.0'
 	compile localGroovy()
 	testCompile 'junit:junit:4.12'
 	testCompile 'org.assertj:assertj-core:3.5.2'
