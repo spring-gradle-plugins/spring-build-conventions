@@ -29,7 +29,7 @@ import org.springframework.build.gradle.propdep.PropDepsPlugin;
 /**
  * @author Rob Winch
  */
-public abstract class SpringJavaPlugin implements Plugin<Project> {
+public abstract class AbstractSpringJavaPlugin implements Plugin<Project> {
 
 	@Override
 	public final void apply(Project project) {
@@ -40,6 +40,7 @@ public abstract class SpringJavaPlugin implements Plugin<Project> {
 		pluginManager.apply(PropDepsPlugin.class);
 		pluginManager.apply(PropDepsEclipsePlugin.class);
 		pluginManager.apply(PropDepsIdeaPlugin.class);
+		pluginManager.apply("io.spring.convention.integration-test");
 		pluginManager.apply("io.spring.convention.springdependencymangement");
 
 		additionalPlugins(project);

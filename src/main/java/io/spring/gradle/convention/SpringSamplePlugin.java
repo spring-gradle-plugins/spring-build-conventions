@@ -21,7 +21,7 @@ import org.gradle.api.Project;
 /**
  * @author Rob Winch
  */
-public class SpringSamplePlugin extends SpringJavaPlugin {
+public class SpringSamplePlugin extends AbstractSpringJavaPlugin {
 
 	@Override
 	public void additionalPlugins(Project project) {

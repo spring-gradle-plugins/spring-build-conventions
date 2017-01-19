@@ -22,7 +22,7 @@ import org.gradle.api.plugins.PluginManager;
 /**
  * @author Rob Winch
  */
-public class SpringModulePlugin extends SpringJavaPlugin {
+public class SpringModulePlugin extends AbstractSpringJavaPlugin {
 
 	@Override
 	public void additionalPlugins(Project project) {
