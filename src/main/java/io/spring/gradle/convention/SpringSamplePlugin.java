@@ -17,17 +17,13 @@
 package io.spring.gradle.convention;
 
 import org.gradle.api.Project;
-import org.gradle.api.plugins.PluginManager;
 
 /**
  * @author Rob Winch
  */
-public class SpringModulePlugin extends SpringJavaPlugin {
+public class SpringSamplePlugin extends SpringJavaPlugin {
 
 	@Override
 	public void additionalPlugins(Project project) {
-		PluginManager pluginManager = project.getPluginManager();
-		pluginManager.apply(SpringMavenPlugin.class);
-		pluginManager.apply("io.spring.convention.springio");
 	}
 }
