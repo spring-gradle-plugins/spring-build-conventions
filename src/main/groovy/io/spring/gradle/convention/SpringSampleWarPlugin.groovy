@@ -36,6 +36,11 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 		pluginManager.apply("war");
 		pluginManager.apply("org.akhikhl.gretty");
 
+		project.gretty {
+			contextPath = '/'
+			integrationTestTask = 'integrationTest'
+		}
+
 		project.tasks.withType(org.akhikhl.gretty.AppBeforeIntegrationTestTask).all { task ->
 			task.doFirst {
 				project.gretty {
