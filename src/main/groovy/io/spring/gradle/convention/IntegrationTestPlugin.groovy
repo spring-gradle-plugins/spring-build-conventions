@@ -37,6 +37,7 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 				html.destination = project.file("$project.buildDir/reports/integration-tests/")
 				junitXml.destination = project.file("$project.buildDir/integration-test-results/")
 			}
+			shouldRunAfter project.tasks.test
 		}
 		project.tasks.check.dependsOn integrationTest
 
