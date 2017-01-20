@@ -30,6 +30,8 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 		}
 
 		Task integrationTest = project.tasks.create("integrationTest", Test) {
+			group = 'Verification'
+			description = 'Runs the integration tests.'
 			dependsOn 'jar'
 			testClassesDir = project.sourceSets.integrationTest.output.classesDir
 			classpath = project.sourceSets.integrationTest.runtimeClasspath
