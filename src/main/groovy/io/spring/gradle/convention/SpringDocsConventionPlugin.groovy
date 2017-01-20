@@ -34,7 +34,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 
 		project.tasks.asciidoctor {
 			backends = ['docbook5']
-			def ghTag = snapshotBuild ? 'master' : project.version
+			def ghTag = 'master'//snapshotBuild ? 'master' : project.version
 			def ghUrl = "https://github.com/spring-projects/spring-security/tree/$ghTag"
 			options = [
 			  eruby: 'erubis',
@@ -49,7 +49,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 				  doctype: 'book',
 				  numbered: '',
 				  'spring-security-version' : project.version,
-				  'spring-version' : springVersion,
+				  'spring-version' : '12',
 				  revnumber : project.version,
 				  'gh-url': ghUrl,
 				  'gh-samples-url': "$ghUrl/samples",
@@ -59,7 +59,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 		}
 
 		project.reference {
-			sourceDir = new File(asciidoctor.outputDir , 'docbook5')
+			sourceDir = new File(project.asciidoctor.outputDir , 'docbook5')
 			pdfFilename = "spring-security-reference.pdf"
 			epubFilename = "spring-security-reference.epub"
 			expandPlaceholders = ""
