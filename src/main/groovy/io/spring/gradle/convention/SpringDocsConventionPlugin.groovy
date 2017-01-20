@@ -22,6 +22,11 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 
 		project.tasks.create('docsZip', Zip) {
 			dependsOn 'api', 'reference'
+			group = 'Distribution'
+			baseName = project.rootProject.name
+			classifier = 'docs'
+			schemaZip.description = "Builds -${classifier} archive containing all " +
+				"Docs for deployment at docs.spring.io"
 
 			from(project.tasks.asciidoctor.outputs) {
 				into 'reference'
