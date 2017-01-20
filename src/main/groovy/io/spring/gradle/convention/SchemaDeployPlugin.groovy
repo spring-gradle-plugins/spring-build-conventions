@@ -29,6 +29,7 @@ public class SchemaDeployPlugin implements Plugin<Project> {
 		}
 
 		project.task('deploySchema') {
+			dependsOn 'schemaZip'
 			doFirst {
 				project.ssh.run {
 					session(project.remotes.docs) {
