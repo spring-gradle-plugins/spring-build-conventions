@@ -14,6 +14,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 		pluginManager.apply("org.asciidoctor.convert");
 		pluginManager.apply(DeployDocsPlugin);
 		pluginManager.apply(JavadocApiPlugin);
+		pluginManager.apply('docbook-reference')
 
 		project.asciidoctorj {
 			version = '1.5.4'
@@ -31,5 +32,37 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 			into 'docs'
 		}
 
+		project.tasks.asciidoctor {
+			backends = ['docbook5']
+			def ghTag = snapshotBuild ? 'master' : project.version
+			def ghUrl = "https://github.com/spring-projects/spring-security/tree/$ghTag"
+			options = [
+			  eruby: 'erubis',
+			  attributes: [
+				  copycss : '',
+				  icons : 'font',
+				  'source-highlighter': 'prettify',
+				  sectanchors : '',
+				  toc2: '',
+				  idprefix: '',
+				  idseparator: '-',
+				  doctype: 'book',
+				  numbered: '',
+				  'spring-security-version' : project.version,
+				  'spring-version' : springVersion,
+				  revnumber : project.version,
+				  'gh-url': ghUrl,
+				  'gh-samples-url': "$ghUrl/samples",
+				  docinfo : ""
+			  ]
+			]
+		}
+
+		project.reference {
+			sourceDir = new File(asciidoctor.outputDir , 'docbook5')
+			pdfFilename = "spring-security-reference.pdf"
+			epubFilename = "spring-security-reference.epub"
+			expandPlaceholders = ""
+		}
 	}
 }
