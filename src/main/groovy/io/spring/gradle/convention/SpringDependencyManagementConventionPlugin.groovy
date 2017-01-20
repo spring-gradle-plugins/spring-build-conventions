@@ -15,18 +15,25 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 public class SpringDependencyManagementConventionPlugin implements Plugin<Project> {
+	static final String DEPENDENCY_MANAGEMENT_RESOURCE = "gradle/dependency-management.properties"
+
 	@Override
 	public void apply(Project project) {
 		project.getPluginManager().apply(DependencyManagementPlugin)
 
-		String platformBomVersion = project.springIoVersion
-		project.dependencyManagement {
-			imports {
-				mavenBom("io.spring.platform:platform-bom:${platformBomVersion}")
+		if(project.hasProperty("springIoVersion")) {
+			project.dependencyManagement {
+				imports {
+					mavenBom("io.spring.platform:platform-bom:${project.springIoVersion}")
+				}
 			}
 		}
 
-		File dependencyManagementFile = project.rootProject.file("gradle/dependency-management.properties")
+		applyDependencyManagementWith(project, project.rootProject.file(DEPENDENCY_MANAGEMENT_RESOURCE))
+		applyDependencyManagementWith(project, project.file(DEPENDENCY_MANAGEMENT_RESOURCE))
+	}
+
+	public void applyDependencyManagementWith(Project project, File dependencyManagementFile) {
 		if(!dependencyManagementFile.exists()) {
 			return;
 		}
