@@ -116,10 +116,7 @@ public class SpringMavenPlugin implements Plugin<Project> {
 				boolean isRelease = projectVersion.endsWith(".RELEASE");
 				boolean isMilestone = !isSnapshot && !isRelease;
 
-				String projectName = project.getRootProject().getName();
-				if(projectName.endsWith("-build")) {
-					projectName = projectName.substring(0, projectName.length() - "-build".length());
-				}
+				String projectName = Utils.getProjectName(project);
 				XmlDocument doc = new XmlDocument((Document) xml.asElement().getParentNode());
 
 				XmlNode version = doc.findNode("version");

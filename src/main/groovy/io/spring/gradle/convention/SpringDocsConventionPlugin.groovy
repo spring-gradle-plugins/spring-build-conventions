@@ -42,10 +42,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 			duplicatesStrategy 'exclude'
 		}
 
-		String projectName = project.getRootProject().getName()
-		if(projectName.endsWith("-build")) {
-			projectName = projectName.substring(0, projectName.length() - "-build".length())
-		}
+		String projectName = Utils.getProjectName(project);
 
 		project.tasks.asciidoctor {
 			backends = ['docbook5','html5']
