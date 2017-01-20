@@ -25,7 +25,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 			group = 'Distribution'
 			baseName = project.rootProject.name
 			classifier = 'docs'
-			schemaZip.description = "Builds -${classifier} archive containing all " +
+			description = "Builds -${classifier} archive containing all " +
 				"Docs for deployment at docs.spring.io"
 
 			from(project.tasks.asciidoctor.outputs) {
