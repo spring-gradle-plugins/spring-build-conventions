@@ -21,9 +21,12 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 		}
 
 		project.tasks.create('docsZip', Zip) {
-			dependsOn 'api', 'asciidoctor'
+			dependsOn 'api', 'reference'
 
 			from(project.tasks.asciidoctor.outputs) {
+				into 'reference'
+			}
+			from(project.tasks.reference.outputs) {
 				into 'reference'
 			}
 			from(project.tasks.api.outputs) {
@@ -33,7 +36,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 		}
 
 		project.tasks.asciidoctor {
-			backends = ['docbook5']
+			backends = ['docbook5','html5']
 			def ghTag = 'master'//snapshotBuild ? 'master' : project.version
 			def ghUrl = "https://github.com/spring-projects/spring-security/tree/$ghTag"
 			options = [
@@ -59,6 +62,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 		}
 
 		project.reference {
+			dependsOn 'asciidoctor'
 			sourceDir = new File(project.asciidoctor.outputDir , 'docbook5')
 			pdfFilename = "spring-security-reference.pdf"
 			epubFilename = "spring-security-reference.epub"
