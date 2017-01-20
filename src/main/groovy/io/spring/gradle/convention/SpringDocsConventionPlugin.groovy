@@ -25,6 +25,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 
 			from(project.tasks.asciidoctor.outputs) {
 				into 'reference'
+				include 'html5/**'
 			}
 			from(project.tasks.reference.outputs) {
 				into 'reference'
@@ -33,6 +34,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 				into 'api'
 			}
 			into 'docs'
+			duplicatesStrategy 'exclude'
 		}
 
 		project.tasks.asciidoctor {
