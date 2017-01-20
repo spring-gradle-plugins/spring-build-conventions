@@ -116,7 +116,10 @@ public class SpringMavenPlugin implements Plugin<Project> {
 				boolean isRelease = projectVersion.endsWith(".RELEASE");
 				boolean isMilestone = !isSnapshot && !isRelease;
 
-				String rootProjectName = project.getRootProject().getName();
+				String projectName = project.getRootProject().getName();
+				if(projectName.endsWith("-build")) {
+					projectName = projectName.substring(0, projectName.length() - "-build".length());
+				}
 				XmlDocument doc = new XmlDocument((Document) xml.asElement().getParentNode());
 
 				XmlNode version = doc.findNode("version");
@@ -130,7 +133,7 @@ public class SpringMavenPlugin implements Plugin<Project> {
 					dependencies.insertElementWithText("packaging", "war");
 				}
 				dependencies.insertElementWithText("description", project.getName());
-				dependencies.insertElementWithText("url", "https://spring.io/" + rootProjectName);
+				dependencies.insertElementWithText("url", "https://spring.io/" + projectName);
 
 				XmlNode organization = dependencies.insertElement("organization");
 				organization.addChild("name", "spring.io");
@@ -142,9 +145,9 @@ public class SpringMavenPlugin implements Plugin<Project> {
 				apacheLicense.addChild("distribution", "repo");
 
 				XmlNode scm = dependencies.insertElement("scm");
-				scm.addChild("url", "https://github.com/spring-projects/" + rootProjectName);
-				scm.addChild("connection", "scm:git:git://github.com/spring-projects/" + rootProjectName);
-				scm.addChild("developerConnection", "scm:git:git://github.com/spring-projects/" + rootProjectName);
+				scm.addChild("url", "https://github.com/spring-projects/" + projectName);
+				scm.addChild("connection", "scm:git:git://github.com/spring-projects/" + projectName);
+				scm.addChild("developerConnection", "scm:git:git://github.com/spring-projects/" + projectName);
 
 				XmlNode developer = dependencies.insertElement("developers").addChild("developer", null);
 				developer.addChild("id", "rwinch");

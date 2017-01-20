@@ -42,10 +42,15 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 			duplicatesStrategy 'exclude'
 		}
 
+		String projectName = project.getRootProject().getName()
+		if(projectName.endsWith("-build")) {
+			projectName = projectName.substring(0, projectName.length() - "-build".length())
+		}
+
 		project.tasks.asciidoctor {
 			backends = ['docbook5','html5']
 			def ghTag = 'master'//snapshotBuild ? 'master' : project.version
-			def ghUrl = "https://github.com/spring-projects/spring-security/tree/$ghTag"
+			def ghUrl = "https://github.com/spring-projects/${projectName}/tree/$ghTag"
 			options = [
 			  eruby: 'erubis',
 			  attributes: [
@@ -58,8 +63,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 				  idseparator: '-',
 				  doctype: 'book',
 				  numbered: '',
-				  'spring-security-version' : project.version,
-				  'spring-version' : '12',
+				  '${projectName}-version' : project.version,
 				  revnumber : project.version,
 				  'gh-url': ghUrl,
 				  'gh-samples-url': "$ghUrl/samples",
@@ -71,8 +75,8 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 		project.reference {
 			dependsOn 'asciidoctor'
 			sourceDir = new File(project.asciidoctor.outputDir , 'docbook5')
-			pdfFilename = "spring-security-reference.pdf"
-			epubFilename = "spring-security-reference.epub"
+			pdfFilename = "${projectName}-reference.pdf"
+			epubFilename = "${projectName}-reference.epub"
 			expandPlaceholders = ""
 		}
 	}
