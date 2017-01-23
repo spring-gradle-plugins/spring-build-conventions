@@ -17,18 +17,23 @@
 package io.spring.gradle.convention;
 
 import org.gradle.api.Project;
-import org.gradle.api.plugins.PluginManager;
 
 /**
  * @author Rob Winch
  */
-public class SpringModulePlugin extends AbstractSpringJavaPlugin {
+public class JacocoConventionPlugin extends AbstractSpringJavaPlugin {
 
 	@Override
 	public void additionalPlugins(Project project) {
-		PluginManager pluginManager = project.getPluginManager();
-		pluginManager.apply(SpringMavenPlugin.class);
-		pluginManager.apply("io.spring.convention.springio");
-		pluginManager.apply("io.spring.convention.jacoco");
+		project.configurations {
+			jacoco //Configuration Group used by Sonar to provide Code Coverage using JaCoCo
+		}
+
+		project.dependencies {
+			jacoco "org.jacoco:org.jacoco.agent:0.7.5.201505241946:runtime"
+		}
+		project.test {
+			jvmArgs "-javaagent:${project.configurations.jacoco.asPath}=destfile=${project.buildDir}/jacoco.exec,includes=${project.group}.*"
+		}
 	}
 }
