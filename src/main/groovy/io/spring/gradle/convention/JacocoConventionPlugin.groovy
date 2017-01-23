@@ -25,15 +25,10 @@ public class JacocoConventionPlugin extends AbstractSpringJavaPlugin {
 
 	@Override
 	public void additionalPlugins(Project project) {
-		project.configurations {
-			jacoco //Configuration Group used by Sonar to provide Code Coverage using JaCoCo
-		}
+		project.getPluginManager().apply("jacoco")
 
-		project.dependencies {
-			jacoco "org.jacoco:org.jacoco.agent:0.7.5.201505241946:runtime"
-		}
-		project.test {
-			jvmArgs "-javaagent:${project.configurations.jacoco.asPath}=destfile=${project.buildDir}/jacoco.exec,includes=${project.group}.*"
+		project.jacoco {
+			toolVersion = "0.7.6.201602180812"
 		}
 	}
 }
