@@ -25,5 +25,6 @@ public class SpringSamplePlugin extends AbstractSpringJavaPlugin {
 
 	@Override
 	public void additionalPlugins(Project project) {
+		project.sonarqube.skipProject = true
 	}
 }
