@@ -99,7 +99,7 @@ class MergePlugin implements Plugin<Project> {
 
 	private void setupTaskDependencies(Project project) {
 		// invoking a task will invoke the task with the same name on 'into' project
-		["sourcesJar", "jar", "javadocJar", "javadoc", "install", "artifactoryPublish"].each {
+		["sourcesJar", "jar", "javadocJar", "javadoc", "install", "artifactoryPublish", "uploadArchives"].each {
 			def task = project.tasks.findByPath(it)
 			if (task) {
 				task.enabled = false
@@ -154,7 +154,10 @@ class MergePlugin implements Plugin<Project> {
 	private postProcessProjects(Gradle gradle) {
 		gradle.allprojects(new Action<Project>() {
 			public void execute(Project project) {
-				project.configurations.getByName("runtime").allDependencies.withType(ProjectDependency).each{
+				if(!project.getPluginManager().hasProperty("merge")) {
+					return
+				}
+				project.configurations.getByName("runtime")?.allDependencies?.withType(ProjectDependency)?.each{
 					Configuration dependsOnMergedFrom = it.dependencyProject.configurations.getByName("merging");
 					dependsOnMergedFrom.dependencies.each{ dep ->
 						project.dependencies.add("runtimeMerge", dep.dependencyProject)

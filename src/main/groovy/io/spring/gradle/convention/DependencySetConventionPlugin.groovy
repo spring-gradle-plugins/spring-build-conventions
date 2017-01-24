@@ -36,7 +36,7 @@ public class DependencySetConventionPlugin implements Plugin<Project> {
 			"org.powermock:powermock-core:${project.powerMockVersion}",
 			"org.powermock:powermock-api-support:${project.powerMockVersion}",
 			"org.powermock:powermock-module-junit4-common:${project.powerMockVersion}",
-			"org.powermock:powermock-module-junit4:vpowerMockVersion",
+			"org.powermock:powermock-module-junit4:${project.powerMockVersion}",
 			project.dependencies.create("org.powermock:powermock-api-mockito:${project.powerMockVersion}") {
 				exclude group: 'org.mockito', module: 'mockito-all'
 			},
