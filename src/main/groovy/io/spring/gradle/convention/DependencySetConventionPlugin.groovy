@@ -3,7 +3,7 @@ package io.spring.gradle.convention;
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-public class DependenciesConventionPlugin implements Plugin<Project> {
+public class DependencySetConventionPlugin implements Plugin<Project> {
 	@Override
 	public void apply(Project project) {
 
@@ -24,7 +24,7 @@ public class DependenciesConventionPlugin implements Plugin<Project> {
 			}
 		]
 
-		project.ext.gebDependencies = spockDependencies + [
+		project.ext.gebDependencies = project.spockDependencies + [
 			"org.seleniumhq.selenium:selenium-htmlunit-driver:${project.seleniumVersion}",
 			"org.gebish:geb-spock:${project.gebVersion}",
 			'commons-httpclient:commons-httpclient:3.1',

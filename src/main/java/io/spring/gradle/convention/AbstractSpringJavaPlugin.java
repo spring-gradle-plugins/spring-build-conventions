@@ -49,6 +49,7 @@ public abstract class AbstractSpringJavaPlugin implements Plugin<Project> {
 		pluginManager.apply(PropDepsIdeaPlugin.class);
 		pluginManager.apply("io.spring.convention.integration-test");
 		pluginManager.apply("io.spring.convention.springdependencymangement");
+		pluginManager.apply("io.spring.convention.dependency-set");
 
 		additionalPlugins(project);
 	}
