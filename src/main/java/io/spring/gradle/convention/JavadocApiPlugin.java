@@ -59,6 +59,8 @@ public class JavadocApiPlugin implements Plugin<Project> {
 
 		api.setMaxMemory("1024m");
 		api.setDestinationDir(new File(project.getBuildDir(), "api"));
+
+		project.getPluginManager().apply("io.spring.convention.javadoc-options");
 	}
 
 	public void setExcludes(String... excludes) {
