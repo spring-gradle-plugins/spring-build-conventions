@@ -154,7 +154,7 @@ class MergePlugin implements Plugin<Project> {
 	private postProcessProjects(Gradle gradle) {
 		gradle.allprojects(new Action<Project>() {
 			public void execute(Project project) {
-				if(!project.getPluginManager().hasProperty("merge")) {
+				if(!project.hasProperty("merge")) {
 					return
 				}
 				project.configurations.getByName("runtime")?.allDependencies?.withType(ProjectDependency)?.each{
