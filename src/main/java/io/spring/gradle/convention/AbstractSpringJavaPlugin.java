@@ -52,7 +52,19 @@ public abstract class AbstractSpringJavaPlugin implements Plugin<Project> {
 		pluginManager.apply("io.spring.convention.dependency-set");
 		pluginManager.apply("io.spring.convention.javadoc-options");
 
+		copyPropertyFromRootProjectTo("group", project);
+		copyPropertyFromRootProjectTo("version", project);
+		copyPropertyFromRootProjectTo("description", project);
+
 		additionalPlugins(project);
+	}
+
+	private void copyPropertyFromRootProjectTo(String propertyName, Project project) {
+		Project rootProject = project.getRootProject();
+		Object property = rootProject.findProperty(propertyName);
+		if(property != null) {
+			project.setProperty(propertyName, property);
+		}
 	}
 
 	protected abstract void additionalPlugins(Project project);
