@@ -119,8 +119,10 @@ class MergePlugin implements Plugin<Project> {
 	private void setupIdeDependencies(Project project) {
 		project.configurations.each { c ->
 			c.dependencies.findAll( { it instanceof org.gradle.api.artifacts.ProjectDependency } ).each { d ->
-				d.dependencyProject.merge.from.each { from ->
-					project.dependencies.add("runtimeMerge", from)
+				if(d.dependencyProject.hasProperty("merge")) {
+					d.dependencyProject.merge.from.each { from ->
+						project.dependencies.add("runtimeMerge", from)
+					}
 				}
 			}
 		}
