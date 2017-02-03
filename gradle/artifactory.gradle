@@ -3,7 +3,7 @@ artifactory {
 	publish {
 		repository {
 			repoKey = 'libs-snapshot-local'
-			if(artifactoryUsername) {
+			if(project.hasProperty('artifactoryUsername')) {
 				username = artifactoryUsername
 				password = artifactoryPassword
 			}
