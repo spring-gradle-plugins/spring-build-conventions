@@ -11,6 +11,7 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(Project project) {
+		project.ext['JDK8_HOME'] = System.getenv("JAVA_HOME")
 		project.getPluginManager().apply(SpringIoPlugin)
 
 		String platformBomVersion = project.springIoVersion
