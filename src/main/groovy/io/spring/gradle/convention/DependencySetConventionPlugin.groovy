@@ -43,6 +43,11 @@ public class DependencySetConventionPlugin implements Plugin<Project> {
 			"org.powermock:powermock-reflect:${project.powerMockVersion}"
 		]
 
+		project.ext.seleniumDependencies = [
+			"org.seleniumhq.selenium:selenium-htmlunit-driver",
+			"org.seleniumhq.selenium:selenium-firefox-driver"
+		]
+
 		project.ext.springCoreDependency = [
 			project.dependencies.create("org.springframework:spring-core") {
 				exclude(group: 'commons-logging', module: 'commons-logging')
