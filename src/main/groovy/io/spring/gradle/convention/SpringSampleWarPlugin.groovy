@@ -41,14 +41,20 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 			integrationTestTask = 'integrationTest'
 		}
 
-		project.tasks.withType(org.akhikhl.gretty.AppBeforeIntegrationTestTask).all { task ->
-			task.doFirst {
+		def prepareAppServerForIntegrationTests = project.tasks.create('prepareAppServerForIntegrationTests') {
+			group = 'Verification'
+			description = 'Prepares the app server for integration tests'
+			doFirst {
 				project.gretty {
 					httpPort = randomPort()
 					servicePort = randomPort()
 					statusPort = randomPort()
 				}
 			}
+		}
+
+		project.tasks.withType(org.akhikhl.gretty.AppBeforeIntegrationTestTask).all { task ->
+			task.dependsOn prepareAppServerForIntegrationTests
 		}
 
 		project.tasks.withType(Test).all { task ->
