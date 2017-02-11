@@ -54,7 +54,7 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 
 		project.plugins.withType(EclipsePlugin) {
 			project.eclipse.classpath {
-					plusConfigurations += [ project.configurations.integrationTestRuntime ]
+					plusConfigurations += [ project.configurations.integrationTestCompile ]
 			}
 		}
 	}
