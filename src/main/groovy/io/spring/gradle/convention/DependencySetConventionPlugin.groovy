@@ -44,9 +44,10 @@ public class DependencySetConventionPlugin implements Plugin<Project> {
 		]
 
 		project.ext.seleniumDependencies = [
-			"org.seleniumhq.selenium:selenium-htmlunit-driver",
-			"org.seleniumhq.selenium:selenium-firefox-driver"
+			"org.seleniumhq.selenium:htmlunit-driver",
+			"org.seleniumhq.selenium:selenium-support"
 		]
+
 
 		project.ext.springCoreDependency = [
 			project.dependencies.create("org.springframework:spring-core") {
