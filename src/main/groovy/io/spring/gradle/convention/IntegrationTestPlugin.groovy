@@ -7,6 +7,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.testing.Test
+import org.gradle.plugins.ide.eclipse.EclipsePlugin
 
 public class IntegrationTestPlugin implements Plugin<Project> {
 
@@ -48,6 +49,12 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 				integrationTest {
 					groovy.srcDirs project.file('src/integration-test/groovy')
 				}
+			}
+		}
+
+		project.plugins.withType(EclipsePlugin) {
+			project.eclipse.classpath {
+					plusConfigurations += [ project.configurations.integrationTestRuntime ]
 			}
 		}
 	}
