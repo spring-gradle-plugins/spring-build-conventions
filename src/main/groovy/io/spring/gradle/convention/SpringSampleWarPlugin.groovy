@@ -37,6 +37,7 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 		pluginManager.apply("org.akhikhl.gretty");
 
 		project.gretty {
+			servletContainer = 'tomcat8'
 			contextPath = '/'
 			integrationTestTask = 'integrationTest'
 		}
