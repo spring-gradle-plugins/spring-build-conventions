@@ -55,28 +55,34 @@ public class SpringMavenPlugin implements Plugin<Project> {
 		project.getArtifacts().add(ARCHIVES, javadocJar);
 		project.getArtifacts().add(ARCHIVES, sourcesJar);
 
+		MavenResolver installResolver = mavenRepositoryForTask(project, "install").mavenInstaller();
+		configurePom(project, installResolver.getPom());
+
+		GroovyMavenDeployer uploadDeployer =  mavenRepositoryForTask(project, "uploadArchives").mavenDeployer();
+		configurePom(project, uploadDeployer.getPom());
+
+		if(project.hasProperty("signing.keyId")) {
+			sign(project, installResolver, uploadDeployer);
+		}
+
+		project.getPluginManager().apply("io.spring.convention.ossrh");
+	}
+
+	private void sign(Project project, MavenResolver installResolver, GroovyMavenDeployer uploadDeployer) {
 		SigningExtension sign = project.getExtensions().findByType(SigningExtension.class);
 		sign.sign(project.getConfigurations().getByName(ARCHIVES));
-
-		MavenResolver installResolver = mavenRepositoryForTask(project, "install").mavenInstaller();
 		installResolver.beforeDeployment(new Action<MavenDeployment>() {
 			@Override
 			public void execute(MavenDeployment deployment) {
 				sign.signPom(deployment);
 			}
 		});
-		configurePom(project, installResolver.getPom());
-
-		GroovyMavenDeployer uploadDeployer =  mavenRepositoryForTask(project, "uploadArchives").mavenDeployer();
 		uploadDeployer.beforeDeployment(new Action<MavenDeployment>() {
 			@Override
 			public void execute(MavenDeployment deployment) {
 				sign.signPom(deployment);
 			}
 		});
-		configurePom(project, uploadDeployer.getPom());
-
-		project.getPluginManager().apply("io.spring.convention.ossrh");
 	}
 
 	private MavenRepositoryHandlerConvention mavenRepositoryForTask(Project project, String taskName) {
