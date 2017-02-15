@@ -24,7 +24,7 @@ dependencies {
 	compile 'io.spring.gradle:docbook-reference-plugin:0.3.1'
 	compile 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
 	compile 'io.spring.gradle:spring-io-plugin:0.0.6.RELEASE'
-	compile 'org.akhikhl.gretty:gretty:1.4.0'
+	compile 'org.akhikhl.gretty:gretty:1.4.1'
 	compile "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"
 	compile localGroovy()
 	testCompile 'junit:junit:4.12'
