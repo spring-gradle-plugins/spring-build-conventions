@@ -22,6 +22,13 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * A Properties which sorts they keys so that they can be written to a File with
+ * the keys sorted.
+ *
+ * @author Rob Winch
+ *
+ */
 class SortedProperties extends Properties {
 	private static final long serialVersionUID = -6199017589626540836L;
 
