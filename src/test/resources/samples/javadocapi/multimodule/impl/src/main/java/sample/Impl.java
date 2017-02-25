@@ -5,10 +5,10 @@ package sample;
  * @author Rob Winch
  *
  */
-public class Api {
+public class Impl {
 
 	/**
 	 * This does stuff
 	 */
-	public void doStuff() {}
+	public void otherThings() {}
 }
