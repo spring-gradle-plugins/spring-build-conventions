@@ -38,15 +38,15 @@ dependencies {
 
 gradlePlugin {
 	plugins {
-		simplePlugin {
+		javadocApi {
 			id = "io.spring.convention.javadoc-api"
 			implementationClass = "io.spring.gradle.convention.JavadocApiPlugin"
 		}
-		simplePlugin {
+		springMaven {
 			id = "io.spring.convention.spring-maven"
 			implementationClass = "io.spring.gradle.convention.SpringMavenPlugin"
 		}
-		simplePlugin {
+		ossrh {
 			id = "io.spring.convention.ossrh"
 			implementationClass = "io.spring.gradle.convention.OssrhPlugin"
 		}
