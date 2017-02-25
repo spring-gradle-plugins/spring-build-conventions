@@ -1,5 +1,0 @@
-package javadocapiplugin.multimodule
-
-plugins {
-  id 'io.spring.convention.javadocapi'
-}
