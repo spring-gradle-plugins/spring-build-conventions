@@ -14,21 +14,29 @@
  * the License.
  */
 
-package io.spring.gradle.convention;
+package io.spring.gradle.convention
 
-import org.gradle.api.Project;
+import org.gradle.api.Plugin;
+import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPlugin;
 
 /**
+ * Adds a version of jacoco to use and makes check depend on jacocoTestReport.
+ *
  * @author Rob Winch
  */
-public class JacocoConventionPlugin extends AbstractSpringJavaPlugin {
+public class JacocoPlugin implements Plugin<Project> {
 
 	@Override
-	public void additionalPlugins(Project project) {
-		project.getPluginManager().apply("jacoco")
+	public void apply(Project project) {
+		project.plugins.withType(JavaPlugin) {
+			project.getPluginManager().apply("jacoco")
 
-		project.jacoco {
-			toolVersion = "0.7.6.201602180812"
+			project.jacoco {
+				toolVersion = "0.7.6.201602180812"
+			}
+
+			project.tasks.check.dependsOn project.tasks.jacocoTestReport
 		}
 	}
 }
