@@ -13,25 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.spring.gradle.convention
+package sample;
 
-import io.spring.gradle.testkit.junit.rules.TestKit
-import org.gradle.testkit.runner.BuildResult
-import org.junit.Rule
-import spock.lang.Specification
+import org.springframework.core.Ordered;
+import spock.lang.Specification;
 
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-
-class DependencySetPluginITest extends Specification {
-	@Rule final TestKit testKit = new TestKit()
-
-	def "dependencies"() {
-		when:
-		BuildResult result = testKit.withProjectResource("samples/dependencyset")
-			.withArguments('dependencies')
-			.build();
-		then:
-		result.task(":dependencies").outcome == SUCCESS
-		!result.output.contains("FAILED")
+class TheTest extends Specification {
+	def "has Ordered"() {
+		expect: 'Loads Ordered fine'
+		Ordered ordered = new Ordered() {
+			@Override
+			int getOrder() {
+				return 0
+			}
+		}
 	}
 }

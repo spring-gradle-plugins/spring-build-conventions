@@ -22,16 +22,30 @@ import spock.lang.Specification
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-class DependencySetPluginITest extends Specification {
+class IntegrationTestPluginITest extends Specification {
 	@Rule final TestKit testKit = new TestKit()
 
-	def "dependencies"() {
+	def "check with java plugin"() {
 		when:
-		BuildResult result = testKit.withProjectResource("samples/dependencyset")
-			.withArguments('dependencies')
+		BuildResult result = testKit.withProjectResource("samples/integrationtest/withjava/")
+				.withArguments('check')
+				.build();
+		then:
+		result.task(":check").outcome == SUCCESS
+		and:
+		new File(testKit.getRootDir(), 'build/integration-test-results/').exists()
+		new File(testKit.getRootDir(), 'build/reports/integration-tests/').exists()
+	}
+
+	def "check with groovy plugin"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/integrationtest/withgroovy/")
+			.withArguments('check')
 			.build();
 		then:
-		result.task(":dependencies").outcome == SUCCESS
-		!result.output.contains("FAILED")
+		result.task(":check").outcome == SUCCESS
+		and:
+		new File(testKit.getRootDir(), 'build/integration-test-results/').exists()
+		new File(testKit.getRootDir(), 'build/reports/integration-tests/').exists()
 	}
 }

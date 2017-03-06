@@ -1,3 +1,18 @@
+/*
+ * Copyright 2002-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package io.spring.gradle.convention
 
 import org.gradle.api.plugins.GroovyPlugin
@@ -8,19 +23,40 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.testing.Test
 import org.gradle.plugins.ide.eclipse.EclipsePlugin
+import org.springframework.build.gradle.propdep.PropDepsPlugin
 
+/**
+ *
+ * Adds support for integration tests to java projects.
+ *
+ * <ul>
+ * <li>Adds integrationTestCompile and integrationTestRuntime configurations</li>
+ * <li>A new source test folder of src/integration-test/java has been added</li>
+ * <li>A task to run integration tests named integrationTest is added</li>
+ * <li>If Groovy plugin is added a new source test folder src/integration-test/groovy is added</li>
+ * </ul>
+ *
+ * @author Rob Winch
+ */
 public class IntegrationTestPlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(Project project) {
+		project.plugins.withType(JavaPlugin.class) {
+			applyJava(project)
+		}
+	}
+
+	private applyJava(Project project) {
 		project.configurations {
 			integrationTestCompile {
-				extendsFrom testCompile, optional, provided
+				extendsFrom testCompile
 			}
 			integrationTestRuntime {
 				extendsFrom integrationTestCompile, testRuntime
 			}
 		}
+
 		project.sourceSets {
 			integrationTest {
 				java.srcDir project.file('src/integration-test/java')
@@ -30,7 +66,7 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 			}
 		}
 
-		Task integrationTest = project.tasks.create("integrationTest", Test) {
+		Task integrationTestTask = project.tasks.create("integrationTest", Test) {
 			group = 'Verification'
 			description = 'Runs the integration tests.'
 			dependsOn 'jar'
@@ -42,9 +78,9 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 			}
 			shouldRunAfter project.tasks.test
 		}
-		project.tasks.check.dependsOn integrationTest
+		project.tasks.check.dependsOn integrationTestTask
 
-		project.tasks.withType(GroovyPlugin) {
+		project.plugins.withType(GroovyPlugin) {
 			project.sourceSets {
 				integrationTest {
 					groovy.srcDirs project.file('src/integration-test/groovy')
@@ -54,7 +90,7 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 
 		project.plugins.withType(EclipsePlugin) {
 			project.eclipse.classpath {
-					plusConfigurations += [ project.configurations.integrationTestCompile ]
+				plusConfigurations += [ project.configurations.integrationTestCompile ]
 			}
 		}
 	}
