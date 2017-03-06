@@ -35,20 +35,3 @@ dependencies {
 		exclude module: 'groovy-all'
 	}
 }
-
-gradlePlugin {
-	plugins {
-		javadocApi {
-			id = "io.spring.convention.javadoc-api"
-			implementationClass = "io.spring.gradle.convention.JavadocApiPlugin"
-		}
-		springMaven {
-			id = "io.spring.convention.spring-maven"
-			implementationClass = "io.spring.gradle.convention.SpringMavenPlugin"
-		}
-		ossrh {
-			id = "io.spring.convention.ossrh"
-			implementationClass = "io.spring.gradle.convention.OssrhPlugin"
-		}
-	}
-}

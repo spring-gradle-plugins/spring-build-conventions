@@ -1,13 +1,7 @@
-buildscript {
-	dependencies {
-		classpath 'io.spring.gradle:spring-gradle-build-conventions:1.0-SNAPSHOT'
-	}
-	repositories {
-		maven { url 'https://repo.spring.io/libs-snapshot' }
-		maven { url 'https://repo.spring.io/plugins-release' }
-	}
+plugins {
+	id 'io.spring.convention.javadoc-api'
+	id 'io.spring.convention.spring-module' apply false
+	id 'io.spring.convention.spring-sample' apply false
 }
-
-apply plugin: 'io.spring.convention.javadocapi'
 
 ext.springIoVersion = 'Athens-SR2'
