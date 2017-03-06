@@ -1,0 +1,9 @@
+apply plugin: 'java'
+apply plugin: 'io.spring.convention.docs'
+
+asciidoctor {
+	attributes \
+		'build-gradle': project.buildFile,
+		'sourcedir': project.sourceSets.main.java.srcDirs[0],
+		'endpoint-url': 'http://example.org'
+}

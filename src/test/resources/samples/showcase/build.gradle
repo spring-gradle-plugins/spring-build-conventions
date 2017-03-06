@@ -1,0 +1,9 @@
+plugins {
+	id 'io.spring.convention.root'
+}
+
+group = "org.springframework.build.test"
+version = "1.0.0.BUILD-SNAPSHOT"
+
+ext.springIoVersion = 'Brussels-RELEASE'
+
