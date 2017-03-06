@@ -37,6 +37,18 @@ class IntegrationTestPluginITest extends Specification {
 		new File(testKit.getRootDir(), 'build/reports/integration-tests/').exists()
 	}
 
+	def "check with propdeps"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/integrationtest/withpropdeps/")
+				.withArguments('check')
+				.build();
+		then:
+		result.task(":check").outcome == SUCCESS
+		and:
+		new File(testKit.getRootDir(), 'build/integration-test-results/').exists()
+		new File(testKit.getRootDir(), 'build/reports/integration-tests/').exists()
+	}
+
 	def "check with groovy plugin"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/integrationtest/withgroovy/")
