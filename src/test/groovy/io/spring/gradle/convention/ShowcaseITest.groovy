@@ -28,14 +28,13 @@ class ShowcaseITest extends Specification {
 	def "build"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/showcase/")
-				.withArguments('dependencyManagement','build','--stacktrace')
+				.withArguments('build','--stacktrace')
 				.forwardOutput()
-				.withDebug(true)
 				.build();
 		then:
-		result.task(":build").outcome == SUCCESS
+		result.output.contains("BUILD SUCCESSFUL")
 		and:
-		new File(testKit.getRootDir(), 'build/integration-test-results/').exists()
-		new File(testKit.getRootDir(), 'build/reports/integration-tests/').exists()
+		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/integration-test-results/').exists()
+		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/reports/integration-tests/').exists()
 	}
 }
