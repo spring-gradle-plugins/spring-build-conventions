@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.javadoc.Javadoc;
@@ -43,6 +44,8 @@ public class JavadocApiPlugin implements Plugin<Project> {
 		logger.info("Applied");
 		Project rootProject = project.getRootProject();
 
+
+		//Task docs = project.getTasks().findByPath("docs") ?: project.getTasks().create("docs");
 		Javadoc api = project.getTasks().create("api", Javadoc.class);
 
 		api.setGroup("Documentation");
@@ -94,3 +97,4 @@ public class JavadocApiPlugin implements Plugin<Project> {
 		});
 	}
 }
+

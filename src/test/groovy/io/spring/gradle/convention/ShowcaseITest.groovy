@@ -31,9 +31,12 @@ class ShowcaseITest extends Specification {
 				.withArguments('build','--stacktrace')
 				.forwardOutput()
 				.build();
-		then:
+		then: 'entire build passes'
 		result.output.contains("BUILD SUCCESSFUL")
-		and:
+
+		and: 'javadoc api works'
+
+		and: 'integration tests run'
 		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/integration-test-results/').exists()
 		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/reports/integration-tests/').exists()
 	}
