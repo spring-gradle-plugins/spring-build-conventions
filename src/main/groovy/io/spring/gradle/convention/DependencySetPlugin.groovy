@@ -17,6 +17,7 @@ package io.spring.gradle.convention;
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPlugin
 
 /**
  * Adds sets of dependencies to make it easy to add a grouping of dependencies. The
@@ -104,5 +105,11 @@ public class DependencySetPlugin implements Plugin<Project> {
 				"org.apache.directory.server:apacheds-server-jndi",
 				'org.apache.directory.shared:shared-ldap'
 		]
+
+		project.plugins.withType(JavaPlugin) {
+			project.dependencies {
+				testCompile project.testDependencies
+			}
+		}
 	}
 }
