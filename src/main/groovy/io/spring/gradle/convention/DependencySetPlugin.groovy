@@ -84,6 +84,13 @@ public class DependencySetPlugin implements Plugin<Project> {
 			}
 		]
 
+		project.ext.testDependencies = [
+			"junit:junit",
+			"org.mockito:mockito-core",
+			"org.springframework:spring-test",
+			"org.assertj:assertj-core:2.2.0"
+		]
+
 		project.ext.jstlDependencies = [
 				"javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api",
 				"org.apache.taglibs:taglibs-standard-jstlel"
