@@ -23,9 +23,9 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.plugins.ide.eclipse.EclipseWtpPlugin;
 import org.gradle.plugins.ide.idea.IdeaPlugin;
-import org.springframework.build.gradle.propdep.PropDepsEclipsePlugin;
-import org.springframework.build.gradle.propdep.PropDepsIdeaPlugin;
-import org.springframework.build.gradle.propdep.PropDepsPlugin;
+import io.spring.gradle.propdeps.PropDepsEclipsePlugin;
+import io.spring.gradle.propdeps.PropDepsIdeaPlugin;
+import io.spring.gradle.propdeps.PropDepsPlugin;
 
 /**
  * @author Rob Winch
