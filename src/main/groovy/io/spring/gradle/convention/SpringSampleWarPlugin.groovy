@@ -69,6 +69,9 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 					task.systemProperty 'app.httpPort', httpPort
 					task.systemProperty 'app.baseURI', httpBaseURI
 					task.systemProperty 'app.httpBaseURI', httpBaseURI
+
+					task.systemProperty 'geb.build.baseUrl', httpBaseURI
+					task.systemProperty 'geb.build.reportsDir', 'build/geb-reports'
 				}
 			}
 		}
