@@ -49,7 +49,7 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 	private applyJava(Project project) {
 		project.configurations {
 			integrationTestCompile {
-				extendsFrom testCompile
+				extendsFrom testCompile, optional, provided
 			}
 			integrationTestRuntime {
 				extendsFrom integrationTestCompile, testRuntime
