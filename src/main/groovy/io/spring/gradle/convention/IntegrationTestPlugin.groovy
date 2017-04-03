@@ -23,7 +23,6 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.testing.Test
 import org.gradle.plugins.ide.eclipse.EclipsePlugin
-import org.springframework.build.gradle.propdep.PropDepsPlugin
 
 /**
  *
