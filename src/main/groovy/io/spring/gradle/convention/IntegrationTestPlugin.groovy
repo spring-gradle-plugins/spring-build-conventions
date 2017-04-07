@@ -15,6 +15,7 @@
  */
 package io.spring.gradle.convention
 
+import io.spring.gradle.propdeps.PropDepsPlugin
 import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.bundling.Zip
@@ -49,7 +50,7 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 	private applyJava(Project project) {
 		project.configurations {
 			integrationTestCompile {
-				extendsFrom testCompile, optional, provided
+				extendsFrom testCompile
 			}
 			integrationTestRuntime {
 				extendsFrom integrationTestCompile, testRuntime
@@ -83,6 +84,14 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 			project.sourceSets {
 				integrationTest {
 					groovy.srcDirs project.file('src/integration-test/groovy')
+				}
+			}
+		}
+
+		project.plugins.withType(PropDepsPlugin) {
+			project.configurations {
+				integrationTestCompile {
+					extendsFrom optional, provided
 				}
 			}
 		}
