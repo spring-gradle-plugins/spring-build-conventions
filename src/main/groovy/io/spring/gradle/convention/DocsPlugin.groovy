@@ -1,12 +1,16 @@
 package io.spring.gradle.convention
 
+import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.PluginManager
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-public class SpringDocsConventionPlugin implements Plugin<Project> {
+/**
+ * Aggregates asciidoc, javadoc, and deploying of the docs into a single plugin
+ */
+public class DocsPlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(Project project) {
@@ -20,7 +24,7 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 			version = '1.5.4'
 		}
 
-		project.tasks.create('docsZip', Zip) {
+		Task docsZip = project.tasks.create('docsZip', Zip) {
 			dependsOn 'api', 'reference'
 			group = 'Distribution'
 			baseName = project.rootProject.name
@@ -76,5 +80,12 @@ public class SpringDocsConventionPlugin implements Plugin<Project> {
 			epubFilename = "${projectName}-reference.epub"
 			expandPlaceholders = ""
 		}
+
+		Task docs = project.tasks.create("docs") {
+			group = 'Documentation'
+			description 'An aggregator task to generate all the documentation'
+			dependsOn docsZip
+		}
+		project.tasks.assemble.dependsOn docs
 	}
 }
