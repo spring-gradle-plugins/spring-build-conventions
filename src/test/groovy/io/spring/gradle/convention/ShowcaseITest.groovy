@@ -40,4 +40,14 @@ class ShowcaseITest extends Specification {
 		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/integration-test-results/').exists()
 		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/reports/integration-tests/').exists()
 	}
+
+	def "springio"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/showcase/")
+				.withArguments('springIoTest','--stacktrace')
+				.forwardOutput()
+				.build();
+		then:
+		result.output.contains("SUCCESS")
+	}
 }

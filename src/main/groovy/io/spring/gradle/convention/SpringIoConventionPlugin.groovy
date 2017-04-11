@@ -1,5 +1,6 @@
 package io.spring.gradle.convention
 
+import io.spring.gradle.propdeps.PropDepsPlugin
 import io.spring.gradle.springio.SpringIoPlugin
 
 import org.gradle.api.plugins.JavaPlugin
@@ -26,5 +27,13 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 			}
 		}
 		project.tasks.create("dependencyManagementExport", DependencyManagementExportTask);
+
+		project.plugins.withType(PropDepsPlugin) {
+			project.configurations {
+				springIoTestRuntime {
+					extendsFrom optional, provided
+				}
+			}
+		}
 	}
 }

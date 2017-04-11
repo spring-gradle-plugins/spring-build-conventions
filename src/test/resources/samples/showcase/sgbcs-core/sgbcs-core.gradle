@@ -1,5 +1,6 @@
 apply plugin: 'io.spring.convention.spring-module'
 
 dependencies {
+	optional 'ch.qos.logback:logback-classic:1.1.10'
 	testCompile 'junit:junit'
 }
