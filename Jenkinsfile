@@ -1,3 +1,10 @@
+def projectProperties = [
+	[$class: 'BuildDiscarderProperty',
+		strategy: [$class: 'LogRotator', numToKeepStr: '5']],
+	pipelineTriggers([cron('@daily')])
+]
+properties(projectProperties)
+
 stage('Artifactory Deploy') {
 	node {
 		checkout scm
