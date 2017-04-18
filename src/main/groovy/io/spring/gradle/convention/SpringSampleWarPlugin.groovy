@@ -16,7 +16,8 @@
 
 package io.spring.gradle.convention;
 
-import org.gradle.api.Project;
+import org.gradle.api.Project
+import org.gradle.api.Task;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.plugins.JavaPlugin;
@@ -39,8 +40,17 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 		project.gretty {
 			servletContainer = 'tomcat8'
 			contextPath = '/'
-			integrationTestTask = 'integrationTest'
 		}
+
+		project.tasks.withType(Test).all { task ->
+			if("integrationTest".equals(task.name)) {
+				applyForIntegrationTest(project, task)
+			}
+		}
+	}
+
+	def applyForIntegrationTest(Project project, Task integrationTest) {
+		project.gretty.integrationTestTask = 'integrationTest'
 
 		def prepareAppServerForIntegrationTests = project.tasks.create('prepareAppServerForIntegrationTests') {
 			group = 'Verification'
@@ -58,22 +68,18 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 			task.dependsOn prepareAppServerForIntegrationTests
 		}
 
-		project.tasks.withType(Test).all { task ->
-			if("integrationTest".equals(task.name)) {
-				task.doFirst {
-					int httpPort = project.gretty.httpPort
-					String host = project.gretty.host ?: 'localhost'
-					String contextPath = project.gretty.contextPath
-					String httpBaseURI = "http://${host}:${httpPort}${contextPath}"
-					task.systemProperty 'app.port', httpPort
-					task.systemProperty 'app.httpPort', httpPort
-					task.systemProperty 'app.baseURI', httpBaseURI
-					task.systemProperty 'app.httpBaseURI', httpBaseURI
+		integrationTest.doFirst {
+			int httpPort = project.gretty.httpPort
+			String host = project.gretty.host ?: 'localhost'
+			String contextPath = project.gretty.contextPath
+			String httpBaseURI = "http://${host}:${httpPort}${contextPath}"
+			integrationTest.systemProperty 'app.port', httpPort
+			integrationTest.systemProperty 'app.httpPort', httpPort
+			integrationTest.systemProperty 'app.baseURI', httpBaseURI
+			integrationTest.systemProperty 'app.httpBaseURI', httpBaseURI
 
-					task.systemProperty 'geb.build.baseUrl', httpBaseURI
-					task.systemProperty 'geb.build.reportsDir', 'build/geb-reports'
-				}
-			}
+			integrationTest.systemProperty 'geb.build.baseUrl', httpBaseURI
+			integrationTest.systemProperty 'geb.build.reportsDir', 'build/geb-reports'
 		}
 	}
 
