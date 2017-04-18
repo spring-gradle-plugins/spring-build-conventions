@@ -20,7 +20,6 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 		project.plugins.withType(SpringIoPlugin) {
 			project.configurations.withType(Object.class) { c->
 				if(c.getName() == 'springIoTestRuntime') {
-					println c.getClass()
 					applySpringIoConfiguration(project)
 				}
 			}
