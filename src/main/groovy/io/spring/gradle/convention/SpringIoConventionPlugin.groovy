@@ -1,9 +1,11 @@
 package io.spring.gradle.convention
 
 import io.spring.gradle.dependencymanagement.DependencyManagementPlugin
+import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
+import io.spring.gradle.dependencymanagement.dsl.GeneratedPomCustomizationHandler
 import io.spring.gradle.propdeps.PropDepsPlugin
 import io.spring.gradle.springio.SpringIoPlugin
-
+import org.gradle.api.Action
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.Plugin
@@ -50,6 +52,8 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 
 		applyDependencyManagementWith(project, project.rootProject.file(DEPENDENCY_MANAGEMENT_RESOURCE))
 		applyDependencyManagementWith(project, project.file(DEPENDENCY_MANAGEMENT_RESOURCE))
+
+		patchSpringIoPlugin(project);
 	}
 
 	public void applyDependencyManagementWith(Project project, File dependencyManagementFile) {
@@ -70,5 +74,15 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 				}
 			}
 		}
+	}
+
+	// work around https://github.com/spring-gradle-plugins/spring-io-plugin/issues/5
+	private void patchSpringIoPlugin(Project project) {
+		final DependencyManagementExtension dependencyManagement = project.getExtensions().findByType(DependencyManagementExtension.class);
+		dependencyManagement.generatedPomCustomization(new Action<GeneratedPomCustomizationHandler>() {
+			public void execute(GeneratedPomCustomizationHandler handler) {
+				handler.setEnabled(true);
+			}
+		});
 	}
 }

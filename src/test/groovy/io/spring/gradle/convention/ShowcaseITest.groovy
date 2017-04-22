@@ -50,4 +50,18 @@ class ShowcaseITest extends Specification {
 		then:
 		result.output.contains("SUCCESS")
 	}
+
+	def "install"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/showcase/")
+				.withArguments('install','--stacktrace')
+				.build();
+		then:
+		result.output.contains("SUCCESS")
+
+		and: 'pom contains dependency management'
+		File pom = new File(testKit.getRootDir(), 'sgbcs-core/build/poms/pom-default.xml')
+		pom.exists()
+		pom.getText().contains("<dependencyManagement>")
+	}
 }
