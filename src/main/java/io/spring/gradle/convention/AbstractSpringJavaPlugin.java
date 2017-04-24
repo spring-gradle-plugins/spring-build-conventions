@@ -16,11 +16,14 @@
 
 package io.spring.gradle.convention;
 
+import io.spring.gradle.propdeps.PropDepsMavenPlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.GroovyPlugin;
 import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.plugins.MavenPlugin;
 import org.gradle.api.plugins.PluginManager;
+import org.gradle.internal.impldep.org.apache.maven.Maven;
 import org.gradle.plugins.ide.eclipse.EclipseWtpPlugin;
 import org.gradle.plugins.ide.idea.IdeaPlugin;
 import io.spring.gradle.propdeps.PropDepsEclipsePlugin;
@@ -47,6 +50,9 @@ public abstract class AbstractSpringJavaPlugin implements Plugin<Project> {
 		pluginManager.apply(PropDepsPlugin.class);
 		pluginManager.apply(PropDepsEclipsePlugin.class);
 		pluginManager.apply(PropDepsIdeaPlugin.class);
+		project.getPlugins().withType(MavenPlugin.class, mavenPlugin -> {
+			pluginManager.apply(PropDepsMavenPlugin.class);
+		});
 		pluginManager.apply("io.spring.convention.integration-test");
 		pluginManager.apply("io.spring.convention.springdependencymangement");
 		pluginManager.apply("io.spring.convention.dependency-set");

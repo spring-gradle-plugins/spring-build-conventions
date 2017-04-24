@@ -62,6 +62,8 @@ class ShowcaseITest extends Specification {
 		and: 'pom contains dependency management'
 		File pom = new File(testKit.getRootDir(), 'sgbcs-core/build/poms/pom-default.xml')
 		pom.exists()
-		pom.getText().contains("<dependencyManagement>")
+		String pomText = pom.getText()
+		pomText.contains("<dependencyManagement>")
+		pomText.contains("<artifactId>logback-classic</artifactId>")
 	}
 }
