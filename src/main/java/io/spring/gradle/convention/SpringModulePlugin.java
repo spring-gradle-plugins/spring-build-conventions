@@ -17,6 +17,7 @@
 package io.spring.gradle.convention;
 
 import org.gradle.api.Project;
+import org.gradle.api.plugins.MavenPlugin;
 import org.gradle.api.plugins.PluginManager;
 
 /**
@@ -27,7 +28,8 @@ public class SpringModulePlugin extends AbstractSpringJavaPlugin {
 	@Override
 	public void additionalPlugins(Project project) {
 		PluginManager pluginManager = project.getPluginManager();
-		pluginManager.apply(SpringMavenPlugin.class);
+		pluginManager.apply(MavenPlugin.class);
+		pluginManager.apply("io.spring.convention.maven");
 		pluginManager.apply("io.spring.convention.springio");
 		pluginManager.apply("io.spring.convention.jacoco");
 		pluginManager.apply("io.spring.convention.merge");

@@ -59,11 +59,77 @@ class ShowcaseITest extends Specification {
 		then:
 		result.output.contains("SUCCESS")
 
-		and: 'pom contains dependency management'
+		and: 'pom exists'
 		File pom = new File(testKit.getRootDir(), 'sgbcs-core/build/poms/pom-default.xml')
 		pom.exists()
 		String pomText = pom.getText()
-		pomText.contains("<dependencyManagement>")
-		pomText.contains("<artifactId>logback-classic</artifactId>")
+
+		and: 'pom contains dependency management'
+		pomText.replaceAll('\\s','').contains('''<dependencyManagement>
+			<dependencies>
+				<dependency>
+					<groupId>io.spring.platform</groupId>
+					<artifactId>platform-bom</artifactId>
+					<version>Brussels-RELEASE</version>
+					<scope>import</scope>
+					<type>pom</type>
+				</dependency>
+			</dependencies>
+		</dependencyManagement>'''.replaceAll('\\s',''))
+
+		and: 'creates optional dependencies correctly'
+		pomText.replaceAll('\\s','').contains("""<dependency>
+		<groupId>ch.qos.logback</groupId>
+		<artifactId>logback-classic</artifactId>
+		<scope>compile</scope>
+		<optional>true</optional>
+	</dependency>""".replaceAll('\\s',''))
+
+		and: 'adds author'
+		pomText.replaceAll('\\s','').contains("""<developers>
+			<developer>
+				<id>rwinch</id>
+				<name>Rob Winch</name>
+				<email>rwinch@pivotal.io</email>
+			</developer>
+			<developer>
+				<id>jgrandja</id>
+				<name>Joe Grandja</name>
+				<email>jgrandja@pivotal.io</email>
+			</developer>
+		</developers>""".replaceAll('\\s',''))
+
+		and: 'adds repositories'
+		pomText.replaceAll('\\s','').contains("""<scm>
+			<connection>scm:git:git://github.com/spring-projects/spring-security</connection>
+			<developerConnection>scm:git:git://github.com/spring-projects/spring-security</developerConnection>
+			<url>https://github.com/spring-projects/spring-security</url>
+		</scm>""".replaceAll('\\s',''))
+
+		and: 'adds description & url'
+		pomText.contains('<description>sgbcs-core</description>')
+		pomText.contains('<url>http://spring.io/spring-security</url>')
+
+		and: 'adds organization'
+		pomText.replaceAll('\\s','').contains('''<organization>
+			<name>spring.io</name>
+			<url>http://spring.io/</url>
+		</organization>'''.replaceAll('\\s',''))
+
+		and: 'adds licenses'
+		pomText.replaceAll('\\s','').contains('''	<licenses>
+			<license>
+				<name>The Apache Software License, Version 2.0</name>
+				<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+				<distribution>repo</distribution>
+			</license>
+		</licenses>'''.replaceAll('\\s',''))
+
+		and: 'adds scm'
+		pomText.replaceAll('\\s','').replaceAll('\\s','').contains("""<scm>
+			<connection>scm:git:git://github.com/spring-projects/spring-security</connection>
+			<developerConnection>scm:git:git://github.com/spring-projects/spring-security</developerConnection>
+			<url>https://github.com/spring-projects/spring-security</url>
+		</scm>""".replaceAll('\\s',''))
 	}
 }
