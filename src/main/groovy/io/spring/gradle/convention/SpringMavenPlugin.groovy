@@ -8,6 +8,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.XmlProvider
 import org.gradle.api.artifacts.component.ModuleComponentSelector
+import org.gradle.api.artifacts.maven.MavenDeployment
 import org.gradle.api.artifacts.maven.MavenPom
 import org.gradle.api.artifacts.result.ResolvedDependencyResult
 import org.gradle.api.plugins.JavaBasePlugin
@@ -54,8 +55,13 @@ public class SpringMavenPlugin implements Plugin<Project> {
 		project.plugins.withType(DependencyManagementPlugin) {
 			inlineDependencyManagement(project);
 		}
-	}
 
+		if(project.hasProperty("signing.keyId")) {
+			sign(project)
+		}
+
+		project.getPluginManager().apply("io.spring.convention.ossrh");
+	}
 
 	private void inlineDependencyManagement(Project project) {
 		final DependencyManagementExtension dependencyManagement = project.getExtensions().findByType(DependencyManagementExtension.class);
@@ -97,6 +103,29 @@ public class SpringMavenPlugin implements Plugin<Project> {
 					dep.version[0].value = moduleVersion.version
 				}
 			}
+		}
+	}
+
+	private void sign(Project project) {
+		project.install {
+			repositories {
+				mavenDeployer {
+					beforeDeployment { MavenDeployment deployment -> project.signing.signPom(deployment) }
+				}
+			}
+		}
+
+		project.uploadArchives {
+			repositories {
+				mavenDeployer {
+					beforeDeployment { MavenDeployment deployment -> project.signing.signPom(deployment) }
+				}
+			}
+		}
+
+		project.signing {
+			required { project.gradle.taskGraph.hasTask("uploadArchives") }
+			sign project.configurations.archives
 		}
 	}
 
