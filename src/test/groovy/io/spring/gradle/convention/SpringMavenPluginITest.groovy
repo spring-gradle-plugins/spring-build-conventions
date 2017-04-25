@@ -27,9 +27,28 @@ class SpringMavenPluginITest extends Specification {
 
 	def "install"() {
 		when:
-		BuildResult result = testKit.withProjectResource("samples/maven")
+		BuildResult result = testKit.withProjectResource("samples/maven/install")
 			.withArguments('install', '-PspringIoVersion=Brussels-RELEASE')
 			.build();
+		then: 'pom contains optional'
+		File pom = new File(testKit.getRootDir(), 'build/poms/pom-default.xml')
+		pom.exists()
+		String pomText = pom.getText()
+		pomText.replaceAll('\\s','').contains("""<dependency>
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>""".replaceAll('\\s',''))
+	}
+
+	def "upload"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/maven/upload")
+				.withArguments('uploadArchives', '-PspringIoVersion=Brussels-RELEASE')
+				.forwardOutput()
+				.build();
 		then: 'pom contains optional'
 		File pom = new File(testKit.getRootDir(), 'build/poms/pom-default.xml')
 		pom.exists()
