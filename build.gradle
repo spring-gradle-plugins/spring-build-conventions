@@ -15,7 +15,7 @@ sourceCompatibility = 1.8
 
 repositories {
 	jcenter()
-	maven { url 'https://repo.spring.io/plugins-release' }
+	maven { url 'https://repo.spring.io/plugins-snapshot' }
 }
 
 dependencies {
