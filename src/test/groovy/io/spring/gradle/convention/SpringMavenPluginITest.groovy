@@ -35,11 +35,11 @@ class SpringMavenPluginITest extends Specification {
 		pom.exists()
 		String pomText = pom.getText()
 		pomText.replaceAll('\\s','').contains("""<dependency>
-      <groupId>aopalliance</groupId>
-      <artifactId>aopalliance</artifactId>
-      <version>1.0</version>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>""".replaceAll('\\s',''))
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>""".replaceAll('\\s',''))
 	}
 }
