@@ -64,18 +64,8 @@ class ShowcaseITest extends Specification {
 		pom.exists()
 		String pomText = pom.getText()
 
-		and: 'pom contains dependency management'
-		pomText.replaceAll('\\s','').contains('''<dependencyManagement>
-			<dependencies>
-				<dependency>
-					<groupId>io.spring.platform</groupId>
-					<artifactId>platform-bom</artifactId>
-					<version>Brussels-RELEASE</version>
-					<scope>import</scope>
-					<type>pom</type>
-				</dependency>
-			</dependencies>
-		</dependencyManagement>'''.replaceAll('\\s',''))
+		and: 'pom does not contain <dependencyManagement>'
+		!pomText.contains('<dependencyManagement>')
 
 		and: 'creates optional dependencies correctly'
 		pomText.replaceAll('\\s','').contains("""<dependency>
@@ -83,6 +73,7 @@ class ShowcaseITest extends Specification {
 		<artifactId>logback-classic</artifactId>
 		<scope>compile</scope>
 		<optional>true</optional>
+		<version>1.1.9</version>
 	</dependency>""".replaceAll('\\s',''))
 
 		and: 'adds author'

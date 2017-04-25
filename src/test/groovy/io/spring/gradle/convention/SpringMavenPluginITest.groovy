@@ -30,7 +30,7 @@ class SpringMavenPluginITest extends Specification {
 		BuildResult result = testKit.withProjectResource("samples/maven")
 			.withArguments('install', '-PspringIoVersion=Brussels-RELEASE')
 			.build();
-		then: 'pom contains dependency management'
+		then: 'pom contains optional'
 		File pom = new File(testKit.getRootDir(), 'build/poms/pom-default.xml')
 		pom.exists()
 		String pomText = pom.getText()

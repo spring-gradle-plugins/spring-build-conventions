@@ -52,8 +52,6 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 
 		applyDependencyManagementWith(project, project.rootProject.file(DEPENDENCY_MANAGEMENT_RESOURCE))
 		applyDependencyManagementWith(project, project.file(DEPENDENCY_MANAGEMENT_RESOURCE))
-
-		patchSpringIoPlugin(project);
 	}
 
 	public void applyDependencyManagementWith(Project project, File dependencyManagementFile) {
@@ -74,15 +72,5 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 				}
 			}
 		}
-	}
-
-	// work around https://github.com/spring-gradle-plugins/spring-io-plugin/issues/5
-	private void patchSpringIoPlugin(Project project) {
-		final DependencyManagementExtension dependencyManagement = project.getExtensions().findByType(DependencyManagementExtension.class);
-		dependencyManagement.generatedPomCustomization(new Action<GeneratedPomCustomizationHandler>() {
-			public void execute(GeneratedPomCustomizationHandler handler) {
-				handler.setEnabled(true);
-			}
-		});
 	}
 }

@@ -1,8 +1,16 @@
 package io.spring.gradle.convention
 
+import io.spring.gradle.dependencymanagement.DependencyManagementPlugin
+import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
+import io.spring.gradle.dependencymanagement.dsl.GeneratedPomCustomizationHandler
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.XmlProvider
+import org.gradle.api.artifacts.component.ModuleComponentSelector
 import org.gradle.api.artifacts.maven.MavenPom
+import org.gradle.api.artifacts.result.ResolvedDependencyResult
+import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.MavenPlugin
@@ -40,6 +48,54 @@ public class SpringMavenPlugin implements Plugin<Project> {
 		project.install {
 			repositories.mavenInstaller {
 				configurePom(project, pom)
+			}
+		}
+
+		project.plugins.withType(DependencyManagementPlugin) {
+			inlineDependencyManagement(project);
+		}
+	}
+
+
+	private void inlineDependencyManagement(Project project) {
+		final DependencyManagementExtension dependencyManagement = project.getExtensions().findByType(DependencyManagementExtension.class);
+		dependencyManagement.generatedPomCustomization( { handler -> handler.setEnabled(false) });
+
+		project.install {
+			repositories.mavenInstaller {
+				configurePomForInlineDependencies(project, pom)
+			}
+		}
+	}
+
+	private void configurePomForInlineDependencies(Project project, MavenPom pom) {
+		pom.withXml { XmlProvider xml ->
+			project.plugins.withType(JavaBasePlugin) {
+				def dependencies = xml.asNode()?.dependencies?.dependency
+				def configuredDependencies = project.configurations.findAll{ it.canBeResolved }*.incoming*.resolutionResult*.allDependencies.flatten()
+				dependencies?.each { Node dep ->
+					def group = dep.groupId.text()
+					def name = dep.artifactId.text()
+
+					ResolvedDependencyResult resolved = configuredDependencies.find { r ->
+						(r.requested instanceof ModuleComponentSelector) &&
+								(r.requested.group == group) &&
+								(r.requested.module == name)
+					}
+
+					if (!resolved) {
+						return
+					}
+
+					def versionNode = dep.version
+					if (!versionNode) {
+						dep.appendNode('version')
+					}
+					def moduleVersion = resolved.selected.moduleVersion
+					dep.groupId[0].value = moduleVersion.group
+					dep.artifactId[0].value = moduleVersion.name
+					dep.version[0].value = moduleVersion.version
+				}
 			}
 		}
 	}
