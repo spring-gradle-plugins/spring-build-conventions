@@ -51,6 +51,11 @@ public class SpringMavenPlugin implements Plugin<Project> {
 				configurePom(project, pom)
 			}
 		}
+		project.uploadArchives {
+			repositories.mavenDeployer {
+				configurePom(project, pom)
+			}
+		}
 
 		project.plugins.withType(DependencyManagementPlugin) {
 			inlineDependencyManagement(project);
@@ -69,6 +74,11 @@ public class SpringMavenPlugin implements Plugin<Project> {
 
 		project.install {
 			repositories.mavenInstaller {
+				configurePomForInlineDependencies(project, pom)
+			}
+		}
+		project.uploadArchives {
+			repositories.mavenDeployer {
 				configurePomForInlineDependencies(project, pom)
 			}
 		}
