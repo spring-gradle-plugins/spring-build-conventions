@@ -6,11 +6,18 @@ import io.spring.gradle.dependencymanagement.dsl.GeneratedPomCustomizationHandle
 import io.spring.gradle.propdeps.PropDepsPlugin
 import io.spring.gradle.springio.SpringIoPlugin
 import org.gradle.api.Action
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+/**
+ * This will add the Spring IO Plugin if it sees either springIoVersion or platformVersion property defined. If platformVersion
+ * is specified and the project is missing a snapshot or milestone repository the repository is automatically added.
+ * The springIoVersion does not automatically add the property since it is typically included in the project vs
+ * externalized.
+ */
 public class SpringIoConventionPlugin implements Plugin<Project> {
 	static final String DEPENDENCY_MANAGEMENT_RESOURCE = "gradle/springio-dependency-management.properties"
 
@@ -29,10 +36,14 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 	}
 
 	private void applySpringIoConfiguration(Project project) {
-		String platformBomVersion = project.springIoVersion
+		String platformBomVersion = project.findProperty('springIoVersion')
 		if(project.hasProperty('platformVersion')) {
 			platformBomVersion = project.findProperty("platformVersion");
 		}
+		if(platformBomVersion == null) {
+			return
+		}
+		addMissingSpringRepository(project, project.findProperty("platformVersion"))
 		project.dependencyManagement {
 			springIoTestRuntime {
 				imports {
@@ -71,6 +82,31 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 					}
 				}
 			}
+		}
+	}
+
+	private void addMissingSpringRepository(Project project, String platformBomVersion) {
+		if(!platformBomVersion) {
+			return
+		}
+		boolean isRelease = platformBomVersion.endsWith('.RELEASE') || platformBomVersion.matches('^.*?\\.SR\\d+$')
+		boolean isSnapshot = platformBomVersion.endsWith('-SNAPSHOT')
+		boolean isMilestone = !(isRelease || isSnapshot)
+		if(isSnapshot) {
+			addMavenRepositoryIfMissing(project,'https://repo.spring.io/libs-snapshot')
+		}
+		if(isMilestone) {
+			addMavenRepositoryIfMissing(project,'https://repo.spring.io/libs-milestone')
+		}
+	}
+
+	private void addMavenRepositoryIfMissing(Project project, String repositoryUrl) {
+		boolean found = project.repositories.findAll { it instanceof MavenArtifactRepository }.collect { it.url.toString() }.find { it.startsWith(repositoryUrl)}
+		if(found) {
+			return
+		}
+		project.repositories {
+			maven { url repositoryUrl }
 		}
 	}
 }

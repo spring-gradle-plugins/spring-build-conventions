@@ -19,7 +19,9 @@ import io.spring.gradle.testkit.junit.rules.TestKit
 import org.gradle.testkit.runner.BuildResult
 import org.junit.Rule
 import spock.lang.Specification
+import spock.lang.Unroll
 
+import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class SpringIoConventionPluginITest extends Specification {
@@ -33,5 +35,48 @@ class SpringIoConventionPluginITest extends Specification {
 		then:
 		result.task(":dependencyInsight").outcome == SUCCESS
 		result.output.contains("org.mockito:mockito-core:2.7.22 -> 1.10.19")
+	}
+
+	@Unroll
+	def "Can Resolve Spring IO projectVersion=#projectVersion platformVersion=#platformVersion"(String projectVersion, String platformVersion) {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/springio/noSpringIoVersion")
+				.withArguments('dependencyInsight','--configuration', 'springIoTestRuntime', '--dependency', 'mockito-core', "-PplatformVersion=${platformVersion}", "-Pversion=${projectVersion}")
+				.build();
+		then:
+		result.task(":dependencyInsight").outcome == SUCCESS
+		result.output.contains("org.mockito:mockito-core:")
+
+		where:
+		projectVersion         | platformVersion
+		'1.0.0.BUILD-SNAPSHOT' | 'Cairo-BUILD-SNAPSHOT'
+		'1.0.0.M1'             | 'Cairo-BUILD-SNAPSHOT'
+		'1.0.0.RC1'            | 'Cairo-BUILD-SNAPSHOT'
+		'1.0.0.RELEASE'        | 'Cairo-BUILD-SNAPSHOT'
+		'1.0.0.BUILD-SNAPSHOT' | 'Brussels-SR1'
+		'1.0.0.M1'             | 'Brussels-SR1'
+		'1.0.0.RC1'            | 'Brussels-SR1'
+		'1.0.0.RELEASE'        | 'Brussels-SR1'
+		'1.0.0.BUILD-SNAPSHOT' | 'Brussels-RELEASE'
+		'1.0.0.M1'             | 'Brussels-RELEASE'
+		'1.0.0.RC1'            | 'Brussels-RELEASE'
+		'1.0.0.RELEASE'        | 'Brussels-RELEASE'
+	}
+
+	def "Adding springIoVersion does not update repositories"() {
+		expect:
+		BuildResult result = testKit.withProjectResource("samples/springio/noSpringIoVersion")
+				.withArguments('dependencyInsight','--configuration', 'springIoTestRuntime', '--dependency', 'mockito-core', "-PspringIoVersion=Cairo-BUILD-SNAPSHOT", "-Pversion=1.0.0.RELEASE")
+				.buildAndFail();
+	}
+
+	def "Spring IO Not Required"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/springio/springIoNotNecessary")
+				.withArguments('dependencyInsight','--configuration', 'springIoTestRuntime', '--dependency', 'mockito-core')
+				.build();
+		then:
+		result.task(":dependencyInsight").outcome == SUCCESS
+		result.output.contains("org.mockito:mockito-core:2.7.22")
 	}
 }
