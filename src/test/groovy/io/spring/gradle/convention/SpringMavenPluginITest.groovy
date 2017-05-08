@@ -43,6 +43,23 @@ class SpringMavenPluginITest extends Specification {
 		</dependency>""".replaceAll('\\s',''))
 	}
 
+	def "inline dependencies does not use spring io configurations"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/maven/install-with-springio")
+				.withArguments('install', '-PspringIoVersion=Athens-RELEASE')
+				.build();
+		then: 'pom contains optional'
+		File pom = new File(testKit.getRootDir(), 'build/poms/pom-default.xml')
+		pom.exists()
+		String pomText = pom.getText()
+		pomText.replaceAll('\\s','').contains("""<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<scope>compile</scope>
+			<version>3.0.0.RELEASE</version>
+		</dependency>""".replaceAll('\\s',''))
+	}
+
 	def "upload"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/maven/upload")
