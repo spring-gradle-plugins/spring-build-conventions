@@ -26,5 +26,7 @@ public class RootProjectPlugin implements Plugin<Project> {
 				property "sonar.java.coveragePlugin", "jacoco"
 			}
 		}
+
+		project.tasks.create("dependencyManagementExport", DependencyManagementExportTask);
 	}
 }
