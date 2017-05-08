@@ -46,7 +46,7 @@ class SpringMavenPluginITest extends Specification {
 	def "inline dependencies does not use spring io configurations"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/maven/install-with-springio")
-				.withArguments('install', '-PspringIoVersion=Athens-RELEASE')
+				.withArguments('install', '-PspringIoVersion=Athens-RELEASE', '--stacktrace')
 				.build();
 		then: 'pom contains optional'
 		File pom = new File(testKit.getRootDir(), 'build/poms/pom-default.xml')

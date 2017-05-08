@@ -1,21 +1,15 @@
 package io.spring.gradle.convention
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Properties;
-
 import io.spring.gradle.dependencymanagement.DependencyManagementPlugin
-
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+/**
+ * If the property springIoVersion is found will automatically apply the Spring IO Platform BOM. If
+ * gradle/dependency-management.gradle is found, will automatically apply this file for configuring the dependencies.
+ */
 public class SpringDependencyManagementConventionPlugin implements Plugin<Project> {
-	static final String DEPENDENCY_MANAGEMENT_RESOURCE = "gradle/dependency-management.properties"
+	static final String DEPENDENCY_MANAGEMENT_RESOURCE = "gradle/dependency-management.gradle"
 
 	@Override
 	public void apply(Project project) {
@@ -35,19 +29,9 @@ public class SpringDependencyManagementConventionPlugin implements Plugin<Projec
 
 	public void applyDependencyManagementWith(Project project, File dependencyManagementFile) {
 		if(!dependencyManagementFile.exists()) {
-			return;
+			return
 		}
 
-		Properties dependencyMap = new Properties();
-		dependencyMap.load(new FileInputStream(dependencyManagementFile));
-
-		project.dependencyManagement {
-			dependencies {
-				for(Map.Entry<Object,Object> entry : dependencyMap.entrySet()) {
-					String managedDependency = entry.getKey() + ":" + entry.getValue();
-					dependency managedDependency
-				}
-			}
-		}
+		project.apply from: dependencyManagementFile.absolutePath
 	}
 }

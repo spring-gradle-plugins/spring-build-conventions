@@ -19,7 +19,6 @@ import org.gradle.api.Project
  * externalized.
  */
 public class SpringIoConventionPlugin implements Plugin<Project> {
-	static final String DEPENDENCY_MANAGEMENT_RESOURCE = "gradle/springio-dependency-management.properties"
 
 	@Override
 	public void apply(Project project) {
@@ -57,29 +56,6 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 			project.configurations {
 				springIoTestRuntime {
 					extendsFrom optional, provided
-				}
-			}
-		}
-
-		applyDependencyManagementWith(project, project.rootProject.file(DEPENDENCY_MANAGEMENT_RESOURCE))
-		applyDependencyManagementWith(project, project.file(DEPENDENCY_MANAGEMENT_RESOURCE))
-	}
-
-	public void applyDependencyManagementWith(Project project, File dependencyManagementFile) {
-		if(!dependencyManagementFile.exists()) {
-			return;
-		}
-
-		Properties dependencyMap = new Properties();
-		dependencyMap.load(new FileInputStream(dependencyManagementFile));
-
-		project.dependencyManagement {
-			springIoTestRuntime {
-				dependencies {
-					for (Map.Entry<Object, Object> entry : dependencyMap.entrySet()) {
-						String managedDependency = entry.getKey() + ":" + entry.getValue();
-						dependency managedDependency
-					}
 				}
 			}
 		}
