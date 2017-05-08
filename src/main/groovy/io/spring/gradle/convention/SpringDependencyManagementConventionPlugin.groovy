@@ -23,8 +23,15 @@ public class SpringDependencyManagementConventionPlugin implements Plugin<Projec
 			}
 		}
 
-		applyDependencyManagementWith(project, project.rootProject.file(DEPENDENCY_MANAGEMENT_RESOURCE))
-		applyDependencyManagementWith(project, project.file(DEPENDENCY_MANAGEMENT_RESOURCE))
+		File rootDir = project.rootDir
+		List<File> dependencyManagementFiles = [project.rootProject.file(DEPENDENCY_MANAGEMENT_RESOURCE)]
+		for(File dir = project.projectDir;dir != rootDir;dir = dir.parentFile) {
+			dependencyManagementFiles.add(new File(dir, DEPENDENCY_MANAGEMENT_RESOURCE))
+		}
+
+		dependencyManagementFiles.each { f->
+			applyDependencyManagementWith(project, f)
+		}
 	}
 
 	public void applyDependencyManagementWith(Project project, File dependencyManagementFile) {
