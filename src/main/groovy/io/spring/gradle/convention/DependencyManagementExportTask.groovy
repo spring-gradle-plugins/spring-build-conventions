@@ -22,7 +22,7 @@ public class DependencyManagementExportTask extends DefaultTask {
 	@TaskAction
 	public void dependencyManagementExport() throws IOException {
 		def projects = this.projects ?: project.subprojects + project
-		def configurations = projects*.configurations*.findAll { ['testRuntime','integrationTestRuntime','grettyRunnerTomcat8'].contains(it.name) }
+		def configurations = projects*.configurations*.findAll { ['testRuntime','integrationTestRuntime','grettyRunnerTomcat8','ajtools'].contains(it.name) }
 		def dependencyResults = configurations*.incoming*.resolutionResult*.allDependencies.flatten()
 		def moduleVersionVersions = dependencyResults.findAll { r -> r.requested instanceof ModuleComponentSelector }.collect { r-> r.selected.moduleVersion }
 
