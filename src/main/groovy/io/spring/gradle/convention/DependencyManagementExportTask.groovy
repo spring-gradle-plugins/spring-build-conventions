@@ -36,6 +36,9 @@ public class DependencyManagementExportTask extends DefaultTask {
 		println '}'
 		println ''
 		println ''
+		println 'TIP Use this to find duplicates:\n$ sort gradle/dependency-management.gradle| uniq -c | grep -v \'^\\s*1\''
+		println ''
+		println ''
 	}
 
 	void setOutputFile(File file) throws IOException {
