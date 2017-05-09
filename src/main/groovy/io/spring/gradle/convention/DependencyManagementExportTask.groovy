@@ -1,6 +1,7 @@
 package io.spring.gradle.convention
 
-import org.gradle.api.Project;
+import org.gradle.api.Project
+import org.gradle.api.artifacts.component.ModuleComponentSelector;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,11 +22,13 @@ public class DependencyManagementExportTask extends DefaultTask {
 	@TaskAction
 	public void dependencyManagementExport() throws IOException {
 		def projects = this.projects ?: project.subprojects + project
-		def dependenciesToCollect = projects*.configurations*.findAll { ['testRuntime','provided', 'optional', 'ajtools'].contains(it.name) }*.resolvedConfiguration.firstLevelModuleDependencies.flatten()
+		def configurations = projects*.configurations*.findAll { ['testRuntime','integrationTestRuntime'].contains(it.name) }
+		def dependencyResults = configurations*.incoming*.resolutionResult*.allDependencies.flatten()
+		def moduleVersionVersions = dependencyResults.findAll { r -> r.requested instanceof ModuleComponentSelector }.collect { r-> r.selected.moduleVersion }
 
 		def projectDependencies = projects.collect { p-> "${p.group}:${p.name}:${p.version}".toString() } as Set
-		def dependencies = dependenciesToCollect.collect { d ->
-			"${d.moduleGroup}:${d.moduleName}:${d.moduleVersion}".toString()
+		def dependencies = moduleVersionVersions.collect { d ->
+			"${d.group}:${d.name}:${d.version}".toString()
 		}.sort() as Set
 
 		println ''
