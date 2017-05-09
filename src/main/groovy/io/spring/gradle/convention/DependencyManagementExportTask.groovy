@@ -18,7 +18,7 @@ public class DependencyManagementExportTask extends DefaultTask {
 	@TaskAction
 	public void dependencyManagementExport() throws IOException {
 		def projects = project.subprojects + project
-		def dependenciesToCollect = projects*.configurations*.findAll { it.name == 'testCompile' || it.name == 'optional' || it.name == 'provided' }*.resolvedConfiguration.firstLevelModuleDependencies.flatten()
+		def dependenciesToCollect = projects*.configurations*.findAll { it.canBeResolved }*.resolvedConfiguration.firstLevelModuleDependencies.flatten()
 
 		def projectDependencies = projects.collect { p-> "${p.group}:${p.name}:${p.version}".toString() } as Set
 		def dependencies = dependenciesToCollect.collect { d ->
