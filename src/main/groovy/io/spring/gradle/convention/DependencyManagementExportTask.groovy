@@ -1,4 +1,6 @@
-package io.spring.gradle.convention;
+package io.spring.gradle.convention
+
+import org.gradle.api.Project;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,11 +16,12 @@ import org.gradle.api.tasks.TaskAction;
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension;
 
 public class DependencyManagementExportTask extends DefaultTask {
+	def projects;
 
 	@TaskAction
 	public void dependencyManagementExport() throws IOException {
-		def projects = project.subprojects + project
-		def dependenciesToCollect = projects*.configurations*.findAll { it.canBeResolved }*.resolvedConfiguration.firstLevelModuleDependencies.flatten()
+		def projects = this.projects ?: project.subprojects + project
+		def dependenciesToCollect = projects*.configurations*.findAll { ['testRuntime','provided', 'optional', 'ajtools'].contains(it.name) }*.resolvedConfiguration.firstLevelModuleDependencies.flatten()
 
 		def projectDependencies = projects.collect { p-> "${p.group}:${p.name}:${p.version}".toString() } as Set
 		def dependencies = dependenciesToCollect.collect { d ->
