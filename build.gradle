@@ -9,7 +9,6 @@ apply plugin: 'maven'
 apply from: "$rootDir/gradle/artifactory.gradle"
 
 group 'io.spring.gradle'
-version '0.0.1.BUILD-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
