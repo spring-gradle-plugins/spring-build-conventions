@@ -1,8 +1,10 @@
+def isSnapshot = version?.endsWith("-SNAPSHOT")
+
 artifactory {
 	contextUrl = 'https://repo.spring.io'
 	publish {
 		repository {
-			repoKey = 'libs-snapshot-local'
+			repoKey = isSnapshot ? 'plugins-snapshot-local' : 'plugins-release-local'
 			if(project.hasProperty('artifactoryUsername')) {
 				username = artifactoryUsername
 				password = artifactoryPassword
@@ -15,7 +17,7 @@ artifactoryPublish {
 	publishConfigs 'archives'
 	publishIvy false
 	properties = [
-		'bintray.package': "${project.group}:dependency-management",
-		'bintray.version': "${project.version}"
+			'bintray.package': "${project.group}:spring-build-conventions",
+			'bintray.version': "${project.version}"
 	]
 }
