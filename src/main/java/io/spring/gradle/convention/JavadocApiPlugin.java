@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.javadoc.Javadoc;
@@ -53,11 +52,11 @@ public class JavadocApiPlugin implements Plugin<Project> {
 
 		Set<Project> subprojects = rootProject.getSubprojects();
 		for (Project subproject : subprojects) {
-			addJavaSourceSet(api, subproject);
+			addProject(api, subproject);
 		}
 
 		if (subprojects.isEmpty()) {
-			addJavaSourceSet(api, project);
+			addProject(api, project);
 		}
 
 		api.setMaxMemory("1024m");
@@ -76,7 +75,7 @@ public class JavadocApiPlugin implements Plugin<Project> {
 		}
 	}
 
-	private void addJavaSourceSet(final Javadoc api, final Project project) {
+	private void addProject(final Javadoc api, final Project project) {
 		for(Pattern exclude : excludes) {
 			if(exclude.matcher(project.getName()).matches()) {
 				logger.info("Skipping {} because it is excluded by {}", project, exclude);
@@ -93,6 +92,12 @@ public class JavadocApiPlugin implements Plugin<Project> {
 				SourceSet mainSourceSet = java.getSourceSets().getByName("main");
 
 				api.setSource(api.getSource().plus(mainSourceSet.getAllJava()));
+				project.getTasks().withType(Javadoc.class).all(new Action<Javadoc>() {
+					@Override
+					public void execute(Javadoc projectJavadoc) {
+						api.setClasspath(api.getClasspath().plus(projectJavadoc.getClasspath()));
+					}
+				});
 			}
 		});
 	}
