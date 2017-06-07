@@ -24,6 +24,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.testing.Test
 import org.gradle.plugins.ide.eclipse.EclipsePlugin
+import org.gradle.plugins.ide.idea.IdeaPlugin
 
 /**
  *
@@ -84,10 +85,25 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 		}
 		project.tasks.check.dependsOn integrationTestTask
 
+		project.plugins.withType(IdeaPlugin) {
+			project.idea {
+				module {
+					testSourceDirs += project.file('src/integration-test/java')
+				}
+			}
+		}
+
 		project.plugins.withType(GroovyPlugin) {
 			project.sourceSets {
 				integrationTest {
 					groovy.srcDirs project.file('src/integration-test/groovy')
+				}
+			}
+			project.plugins.withType(IdeaPlugin) {
+				project.idea {
+					module {
+						testSourceDirs += project.file('src/integration-test/groovy')
+					}
 				}
 			}
 		}
