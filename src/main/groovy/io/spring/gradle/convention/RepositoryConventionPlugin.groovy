@@ -6,10 +6,8 @@ import org.gradle.api.Project
 public class RepositoryConventionPlugin implements Plugin<Project> {
 	@Override
 	public void apply(Project project) {
-		String projectVersion = String.valueOf(project.getVersion());
-		boolean isSnapshot = projectVersion.endsWith("-SNAPSHOT");
-		boolean isRelease = projectVersion.endsWith(".RELEASE");
-		boolean isMilestone = !isSnapshot && !isRelease;
+		boolean isSnapshot = Utils.isSnapshot(project)
+		boolean isMilestone = Utils.isMilestone(project);
 
 		String mavenUrl
 		if(isSnapshot) {
