@@ -12,5 +12,23 @@ public class Utils {
 		return projectName;
 	}
 
+	static boolean isSnapshot(Project project) {
+		String projectVersion = projectVersion(project);
+		return projectVersion.endsWith("-SNAPSHOT");
+	}
+
+	static boolean isMilestone(Project project) {
+		return !isSnapshot(project) && !isRelease(project);
+	}
+
+	static boolean isRelease(Project project) {
+		String projectVersion = projectVersion(project);
+		return projectVersion.endsWith(".RELEASE");
+	}
+
+	private static String projectVersion(Project project) {
+		return String.valueOf(project.getVersion());
+	}
+
 	private Utils() {}
 }

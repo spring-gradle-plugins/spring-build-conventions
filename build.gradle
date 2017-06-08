@@ -18,19 +18,22 @@ repositories {
 }
 
 dependencies {
-	compile 'org.hidetake:gradle-ssh-plugin:2.7.0'
-	compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+	compile 'io.spring.gradle:dependency-management-plugin:1.0.2.RELEASE'
 	compile 'io.spring.gradle:docbook-reference-plugin:0.3.1'
 	compile 'io.spring.gradle:propdeps-plugin:0.0.9.RELEASE'
 	compile 'io.spring.gradle:spring-io-plugin:0.0.6.RELEASE'
-	compile 'io.spring.gradle:dependency-management-plugin:1.0.2.RELEASE'
 	compile 'org.akhikhl.gretty:gretty:1.4.2'
-	compile "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"
+	compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+	compile 'org.hidetake:gradle-ssh-plugin:2.7.0'
+	compile('org.jfrog.buildinfo:build-info-extractor-gradle:4.4.18') {
+		exclude module: 'groovy-all'
+	}
+	compile 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1'
 	compile localGroovy()
 	testCompile 'junit:junit:4.12'
-	testCompile 'org.mockito:mockito-core:2.5.4'
-	testCompile 'org.assertj:assertj-core:3.5.2'
 	testCompile 'org.apache.commons:commons-io:1.3.2'
+	testCompile 'org.assertj:assertj-core:3.5.2'
+	testCompile 'org.mockito:mockito-core:2.5.4'
 	testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
 		exclude module: 'groovy-all'
 	}

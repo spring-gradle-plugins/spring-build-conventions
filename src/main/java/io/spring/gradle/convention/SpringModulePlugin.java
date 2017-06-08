@@ -30,6 +30,7 @@ public class SpringModulePlugin extends AbstractSpringJavaPlugin {
 		PluginManager pluginManager = project.getPluginManager();
 		pluginManager.apply(MavenPlugin.class);
 		pluginManager.apply("io.spring.convention.maven");
+		pluginManager.apply("io.spring.convention.artifactory");
 		pluginManager.apply("io.spring.convention.springio");
 		pluginManager.apply("io.spring.convention.jacoco");
 		pluginManager.apply("io.spring.convention.merge");
