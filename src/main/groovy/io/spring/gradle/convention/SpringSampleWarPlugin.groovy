@@ -40,6 +40,7 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 		project.gretty {
 			servletContainer = 'tomcat8'
 			contextPath = '/'
+			fileLogEnabled = false
 		}
 
 		project.tasks.withType(Test).all { task ->
