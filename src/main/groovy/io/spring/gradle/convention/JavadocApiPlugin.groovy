@@ -45,7 +45,7 @@ public class JavadocApiPlugin implements Plugin<Project> {
 
 
 		//Task docs = project.getTasks().findByPath("docs") ?: project.getTasks().create("docs");
-		Javadoc api = project.getTasks().create("api", Javadoc.class);
+		Javadoc api = project.getTasks().create("api", Javadoc);
 
 		api.setGroup("Documentation");
 		api.setDescription("Generates aggregated Javadoc API documentation.");
