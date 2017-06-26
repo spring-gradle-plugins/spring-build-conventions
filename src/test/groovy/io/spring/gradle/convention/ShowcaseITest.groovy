@@ -44,7 +44,7 @@ class ShowcaseITest extends Specification {
 	def "springio"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/showcase/")
-				.withArguments('springIoTest','--stacktrace')
+				.withArguments('-PplatformVersion=Brussels-RELEASE','springIoTest','--stacktrace')
 				.forwardOutput()
 				.build();
 		then:

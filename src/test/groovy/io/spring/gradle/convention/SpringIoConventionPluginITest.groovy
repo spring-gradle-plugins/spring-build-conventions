@@ -30,7 +30,7 @@ class SpringIoConventionPluginITest extends Specification {
 	def "dependencies"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/springio/override")
-			.withArguments('dependencyInsight','--configuration', 'springIoTestRuntime', '--dependency', 'mockito-core')
+			.withArguments('dependencyInsight','-PplatformVersion=Brussels-RELEASE','--configuration', 'springIoTestRuntime', '--dependency', 'mockito-core')
 			.build();
 		then:
 		result.task(":dependencyInsight").outcome == SUCCESS
@@ -73,7 +73,7 @@ class SpringIoConventionPluginITest extends Specification {
 	def "Spring IO Not Required"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/springio/springIoNotNecessary")
-				.withArguments('dependencyInsight','--configuration', 'springIoTestRuntime', '--dependency', 'mockito-core')
+				.withArguments('dependencyInsight','--configuration', 'testRuntime', '--dependency', 'mockito-core')
 				.build();
 		then:
 		result.task(":dependencyInsight").outcome == SUCCESS

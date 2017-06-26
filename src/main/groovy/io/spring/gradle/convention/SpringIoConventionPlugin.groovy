@@ -22,26 +22,22 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(Project project) {
-		project.ext['JDK8_HOME'] = System.getProperty("java.home");
-		project.getPluginManager().apply(SpringIoPlugin)
+		if(project.hasProperty('platformVersion')) {
+			project.ext['JDK8_HOME'] = System.getProperty("java.home");
+			project.getPluginManager().apply(SpringIoPlugin)
 
-		project.plugins.withType(SpringIoPlugin) {
-			project.configurations.withType(Object.class) { c->
-				if(c.getName() == 'springIoTestRuntime') {
-					applySpringIoConfiguration(project)
+			project.plugins.withType(SpringIoPlugin) {
+				project.configurations.withType(Object.class) { c ->
+					if (c.getName() == 'springIoTestRuntime') {
+						applySpringIoConfiguration(project)
+					}
 				}
 			}
 		}
 	}
 
 	private void applySpringIoConfiguration(Project project) {
-		String platformBomVersion = project.findProperty('springIoVersion')
-		if(project.hasProperty('platformVersion')) {
-			platformBomVersion = project.findProperty("platformVersion");
-		}
-		if(platformBomVersion == null) {
-			return
-		}
+		String platformBomVersion = project.findProperty("platformVersion");
 		addMissingSpringRepository(project, project.findProperty("platformVersion"))
 		project.dependencyManagement {
 			springIoTestRuntime {
