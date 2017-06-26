@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-	compile 'io.spring.gradle:dependency-management-plugin:1.0.2.RELEASE'
+	compile 'io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE'
 	compile 'io.spring.gradle:docbook-reference-plugin:0.3.1'
 	compile 'io.spring.gradle:propdeps-plugin:0.0.9.RELEASE'
 	compile 'io.spring.gradle:spring-io-plugin:0.0.6.RELEASE'
