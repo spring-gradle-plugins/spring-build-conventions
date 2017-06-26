@@ -21,7 +21,7 @@ dependencies {
 	compile 'io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE'
 	compile 'io.spring.gradle:docbook-reference-plugin:0.3.1'
 	compile 'io.spring.gradle:propdeps-plugin:0.0.9.RELEASE'
-	compile 'io.spring.gradle:spring-io-plugin:0.0.6.RELEASE'
+	compile 'io.spring.gradle:spring-io-plugin:0.0.8.RELEASE'
 	compile 'org.akhikhl.gretty:gretty:1.4.2'
 	compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
 	compile 'org.hidetake:gradle-ssh-plugin:2.7.0'
