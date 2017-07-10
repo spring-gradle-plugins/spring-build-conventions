@@ -53,23 +53,23 @@ public class DocsPlugin implements Plugin<Project> {
 			def ghTag = 'master'//snapshotBuild ? 'master' : project.version
 			def ghUrl = "https://github.com/spring-projects/${projectName}/tree/$ghTag"
 			options = [
-			  eruby: 'erubis',
-			  attributes: [
-				  copycss : '',
-				  icons : 'font',
-				  'source-highlighter': 'prettify',
-				  sectanchors : '',
-				  toc2: '',
-				  idprefix: '',
-				  idseparator: '-',
-				  doctype: 'book',
-				  numbered: '',
-				  '${projectName}-version' : project.version,
-				  revnumber : project.version,
-				  'gh-url': ghUrl,
-				  'gh-samples-url': "$ghUrl/samples",
-				  docinfo : ""
-			  ]
+					eruby: 'erubis',
+			]
+			attributes = [
+					copycss : '',
+					icons : 'font',
+					'source-highlighter': 'prettify',
+					sectanchors : '',
+					toc2: '',
+					idprefix: '',
+					idseparator: '-',
+					doctype: 'book',
+					numbered: '',
+					'${projectName}-version' : project.version,
+					revnumber : project.version,
+					'gh-url': ghUrl,
+					'gh-samples-url': "$ghUrl/samples",
+					docinfo : ""
 			]
 		}
 
