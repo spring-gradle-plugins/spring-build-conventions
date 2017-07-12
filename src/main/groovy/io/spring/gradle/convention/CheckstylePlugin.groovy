@@ -27,7 +27,7 @@ import org.gradle.api.plugins.JavaPlugin
  */
 class CheckstylePlugin implements Plugin<Project> {
 
-	final CHECKSTYLE_DIR = 'config/checkstyle'
+	final CHECKSTYLE_DIR = 'etc/checkstyle'
 
 	@Override
 	void apply(Project project) {
@@ -37,7 +37,7 @@ class CheckstylePlugin implements Plugin<Project> {
 				project.getPluginManager().apply('checkstyle')
 
 				project.checkstyle {
-					configFile = project.rootProject.file("$CHECKSTYLE_DIR/checkstyle.xml").
+					configFile = project.rootProject.file("$CHECKSTYLE_DIR/checkstyle.xml")
 					configProperties.configDir = configFile.parentFile
 					toolVersion = '6.16.1'
 				}
