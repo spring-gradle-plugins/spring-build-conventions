@@ -141,6 +141,7 @@ public class SpringMavenPlugin implements Plugin<Project> {
 
 	private static void configurePom(Project project, MavenPom pom) {
 		pom.whenConfigured { p ->
+			p.dependencies.removeAll { it.scope == 'test' }
 			p.dependencies = p.dependencies.sort { dep ->
 				"$dep.scope:$dep.optional:$dep.groupId:$dep.artifactId"
 			}
