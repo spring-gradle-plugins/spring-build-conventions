@@ -75,7 +75,7 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 			group = 'Verification'
 			description = 'Runs the integration tests.'
 			dependsOn 'jar'
-			testClassesDir = project.sourceSets.integrationTest.output.classesDir
+			testClassesDirs = project.sourceSets.integrationTest.output.classesDirs
 			classpath = project.sourceSets.integrationTest.runtimeClasspath
 			reports {
 				html.destination = project.file("$project.buildDir/reports/integration-tests/")
