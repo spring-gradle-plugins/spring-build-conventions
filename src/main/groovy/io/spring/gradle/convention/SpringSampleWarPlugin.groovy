@@ -43,6 +43,22 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 			fileLogEnabled = false
 		}
 
+		Task prepareAppServerForIntegrationTests = project.tasks.create('prepareAppServerForIntegrationTests') {
+			group = 'Verification'
+			description = 'Prepares the app server for integration tests'
+			doFirst {
+				project.gretty {
+					httpPort = randomPort()
+					httpsPort = randomPort()
+					servicePort = randomPort()
+					statusPort = randomPort()
+				}
+			}
+		}
+		project.tasks.withType(org.akhikhl.gretty.AppBeforeIntegrationTestTask).all { task ->
+			task.dependsOn prepareAppServerForIntegrationTests
+		}
+
 		project.tasks.withType(Test).all { task ->
 			if("integrationTest".equals(task.name)) {
 				applyForIntegrationTest(project, task)
@@ -51,35 +67,27 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 	}
 
 	def applyForIntegrationTest(Project project, Task integrationTest) {
-		project.gretty.integrationTestTask = 'integrationTest'
-
-		def prepareAppServerForIntegrationTests = project.tasks.create('prepareAppServerForIntegrationTests') {
-			group = 'Verification'
-			description = 'Prepares the app server for integration tests'
-			doFirst {
-				project.gretty {
-					httpPort = randomPort()
-					servicePort = randomPort()
-					statusPort = randomPort()
-				}
-			}
-		}
-
-		project.tasks.withType(org.akhikhl.gretty.AppBeforeIntegrationTestTask).all { task ->
-			task.dependsOn prepareAppServerForIntegrationTests
-		}
+		project.gretty.integrationTestTask = integrationTest.name
 
 		integrationTest.doFirst {
-			int httpPort = project.gretty.httpPort
+			def gretty = project.gretty
 			String host = project.gretty.host ?: 'localhost'
+			boolean isHttps = gretty.httpsEnabled
+			int httpPort = gretty.httpPort
+			int httpsPort = gretty.httpsPort
+			int port = isHttps ? httpsPort : httpPort
 			String contextPath = project.gretty.contextPath
-			String httpBaseURI = "http://${host}:${httpPort}${contextPath}"
-			integrationTest.systemProperty 'app.port', httpPort
+			String httpBaseUrl = "http://${host}:${httpPort}${contextPath}"
+			String httpsBaseUrl = "https://${host}:${httpsPort}${contextPath}"
+			String baseUrl = isHttps ? httpsBaseUrl : httpBaseUrl
+			integrationTest.systemProperty 'app.port', port
 			integrationTest.systemProperty 'app.httpPort', httpPort
-			integrationTest.systemProperty 'app.baseURI', httpBaseURI
-			integrationTest.systemProperty 'app.httpBaseURI', httpBaseURI
+			integrationTest.systemProperty 'app.httpsPort', httpsPort
+			integrationTest.systemProperty 'app.baseURI', baseUrl
+			integrationTest.systemProperty 'app.httpBaseURI', httpBaseUrl
+			integrationTest.systemProperty 'app.httpsBaseURI', httpsBaseUrl
 
-			integrationTest.systemProperty 'geb.build.baseUrl', httpBaseURI
+			integrationTest.systemProperty 'geb.build.baseUrl', baseUrl
 			integrationTest.systemProperty 'geb.build.reportsDir', 'build/geb-reports'
 		}
 	}
