@@ -65,6 +65,12 @@ public abstract class AbstractSpringJavaPlugin implements Plugin<Project> {
 		copyPropertyFromRootProjectTo("version", project);
 		copyPropertyFromRootProjectTo("description", project);
 
+		project.jar {
+			manifest.attributes["Created-By"] =
+					"${System.getProperty("java.version")} (${System.getProperty("java.specification.vendor")})"
+			manifest.attributes["Implementation-Title"] = project.name
+			manifest.attributes["Implementation-Version"] = project.version
+		}
 		additionalPlugins(project);
 	}
 
