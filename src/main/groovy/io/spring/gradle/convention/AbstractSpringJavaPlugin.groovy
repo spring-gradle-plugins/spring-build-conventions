@@ -70,6 +70,7 @@ public abstract class AbstractSpringJavaPlugin implements Plugin<Project> {
 					"${System.getProperty("java.version")} (${System.getProperty("java.specification.vendor")})"
 			manifest.attributes["Implementation-Title"] = project.name
 			manifest.attributes["Implementation-Version"] = project.version
+			manifest.attributes["Automatic-Module-Name"] = project.name.replace('-', '.')
 		}
 		additionalPlugins(project);
 	}
