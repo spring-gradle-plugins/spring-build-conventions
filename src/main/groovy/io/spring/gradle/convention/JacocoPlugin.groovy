@@ -32,10 +32,6 @@ public class JacocoPlugin implements Plugin<Project> {
 		project.plugins.withType(JavaPlugin) {
 			project.getPluginManager().apply("jacoco")
 
-			project.jacoco {
-				toolVersion = "0.7.6.201602180812"
-			}
-
 			project.tasks.check.dependsOn project.tasks.jacocoTestReport
 		}
 	}
