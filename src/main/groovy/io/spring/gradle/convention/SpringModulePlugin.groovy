@@ -34,5 +34,14 @@ public class SpringModulePlugin extends AbstractSpringJavaPlugin {
 		pluginManager.apply("io.spring.convention.springio");
 		pluginManager.apply("io.spring.convention.jacoco");
 		pluginManager.apply("io.spring.convention.merge");
+
+		def publishArtifacts = project.task("publishArtifacts")
+		publishArtifacts.group = 'Publishing tasks'
+		publishArtifacts.description = "Publishes the artifacts to either Artifactor or Maven Central"
+		if(Utils.isSnapshot(project)) {
+			publishArtifacts.dependsOn project.tasks.artifactoryPublish
+		} else {
+			publishArtifacts.dependsOn project.tasks.uploadArchives
+		}
 	}
 }
