@@ -61,7 +61,7 @@ public class SpringMavenPlugin implements Plugin<Project> {
 			inlineDependencyManagement(project);
 		}
 
-		if(project.hasProperty("signing.keyId")) {
+		if(project.hasProperty("signing.keyId") && Utils.isRelease(project)) {
 			sign(project)
 		}
 
