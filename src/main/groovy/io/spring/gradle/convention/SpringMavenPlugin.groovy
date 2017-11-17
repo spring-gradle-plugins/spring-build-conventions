@@ -158,6 +158,7 @@ public class SpringMavenPlugin implements Plugin<Project> {
 			if(isWar) {
 				packaging = "war"
 			}
+			name = project.name
 			description = project.name
 			url = 'http://spring.io/spring-security'
 			organization {
