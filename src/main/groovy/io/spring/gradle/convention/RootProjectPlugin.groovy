@@ -30,10 +30,10 @@ public class RootProjectPlugin implements Plugin<Project> {
 
 		project.tasks.create("dependencyManagementExport", DependencyManagementExportTask);
 
-		def finalizePublishArtifacts = project.task("finalizePublishArtifacts")
+		def finalizeDeployArtifacts = project.task("finalizeDeployArtifacts")
 		if(Utils.isRelease(project)) {
 			project.getPluginManager().apply("io.codearte.nexus-staging");
-			finalizePublishArtifacts.dependsOn project.tasks.closeAndReleaseRepository
+			finalizeDeployArtifacts.dependsOn project.tasks.closeAndReleaseRepository
 			project.nexusStaging.packageGroup = 'org.springframework'
 		}
 	}
