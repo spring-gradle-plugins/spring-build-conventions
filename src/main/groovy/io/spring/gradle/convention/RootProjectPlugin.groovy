@@ -12,6 +12,7 @@ public class RootProjectPlugin implements Plugin<Project> {
 		pluginManager.apply(SchemaPlugin)
 		pluginManager.apply("org.sonarqube")
 
+
 		String projectName = Utils.getProjectName(project);
 		project.sonarqube {
 			properties {
@@ -28,5 +29,11 @@ public class RootProjectPlugin implements Plugin<Project> {
 		}
 
 		project.tasks.create("dependencyManagementExport", DependencyManagementExportTask);
+
+		def finalizePublishArtifacts = project.task("finalizePublishArtifacts")
+		if(Utils.isRelease(project)) {
+			project.getPluginManager().apply("io.codearte.nexus-staging");
+			finalizePublishArtifacts.dependsOn project.tasks.closeAndReleaseRepository
+		}
 	}
 }
