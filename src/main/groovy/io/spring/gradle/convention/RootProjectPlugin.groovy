@@ -32,8 +32,8 @@ public class RootProjectPlugin implements Plugin<Project> {
 
 		def finalizeDeployArtifacts = project.task("finalizeDeployArtifacts")
 		if(Utils.isRelease(project)) {
-			project.nexusUsername = project.ossrhUsername
-			project.nexusPassword = project.ossrhPassword
+			project.ext.nexusUsername = project.ossrhUsername
+			project.ext.nexusPassword = project.ossrhPassword
 			project.getPluginManager().apply("io.codearte.nexus-staging");
 			finalizeDeployArtifacts.dependsOn project.tasks.closeAndReleaseRepository
 			project.nexusStaging.packageGroup = 'org.springframework'
