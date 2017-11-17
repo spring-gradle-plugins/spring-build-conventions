@@ -34,6 +34,7 @@ public class RootProjectPlugin implements Plugin<Project> {
 		if(Utils.isRelease(project)) {
 			project.getPluginManager().apply("io.codearte.nexus-staging");
 			finalizePublishArtifacts.dependsOn project.tasks.closeAndReleaseRepository
+			project.nexusStaging.packageGroup = 'org.springframework'
 		}
 	}
 }
