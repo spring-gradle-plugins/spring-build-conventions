@@ -31,7 +31,7 @@ public class RootProjectPlugin implements Plugin<Project> {
 		project.tasks.create("dependencyManagementExport", DependencyManagementExportTask);
 
 		def finalizeDeployArtifacts = project.task("finalizeDeployArtifacts")
-		if(Utils.isRelease(project)) {
+		if(Utils.isRelease(project) && project.hasProperty("ossrhUsername")) {
 			project.ext.nexusUsername = project.ossrhUsername
 			project.ext.nexusPassword = project.ossrhPassword
 			project.getPluginManager().apply("io.codearte.nexus-staging");
