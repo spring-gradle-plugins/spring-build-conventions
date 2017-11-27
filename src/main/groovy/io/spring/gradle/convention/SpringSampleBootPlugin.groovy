@@ -34,5 +34,9 @@ public class SpringSampleBootPlugin extends SpringSamplePlugin {
 		PluginManager pluginManager = project.getPluginManager();
 
 		pluginManager.apply("org.springframework.boot");
+
+		project.repositories {
+			maven { url 'https://repo.spring.io/libs-milestone' }
+		}
 	}
 }
