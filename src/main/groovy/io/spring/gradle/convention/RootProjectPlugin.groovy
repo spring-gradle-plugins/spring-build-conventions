@@ -24,7 +24,6 @@ public class RootProjectPlugin implements Plugin<Project> {
 				property "sonar.links.issue", "https://github.com/spring-projects/${projectName}/issues"
 				property "sonar.links.scm", "https://github.com/spring-projects/${projectName}"
 				property "sonar.links.scm_dev", "https://github.com/spring-projects/${projectName}.git"
-				property "sonar.java.coveragePlugin", "jacoco"
 			}
 		}
 
