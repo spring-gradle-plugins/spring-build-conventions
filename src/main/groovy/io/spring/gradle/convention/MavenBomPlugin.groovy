@@ -32,5 +32,14 @@ public class MavenBomPlugin implements Plugin<Project> {
 				project.mavenBom.projects.add(p)
 			}
 		}
+
+		def deployArtifacts = project.task("deployArtifacts")
+		deployArtifacts.group = 'Deploy tasks'
+		deployArtifacts.description = "Deploys the artifacts to either Artifactor or Maven Central"
+		if(Utils.isSnapshot(project)) {
+			deployArtifacts.dependsOn project.tasks.artifactoryPublish
+		} else {
+			deployArtifacts.dependsOn project.tasks.uploadArchives
+		}
 	}
 }
