@@ -11,9 +11,11 @@ public class MavenBomPlugin implements Plugin<Project> {
 	static String MAVEN_BOM_TASK_NAME = "mavenBom"
 
 	public void apply(Project project) {
-		apply plugin: 'io.spring.convention.artifactory'
-		apply plugin: 'io.spring.convention.maven'
-		project.plugins.apply(JavaPlugin)
+		project.configurations {
+			archives
+		}
+		project.plugins.apply('io.spring.convention.artifactory')
+		project.plugins.apply('io.spring.convention.maven')
 		project.plugins.apply(MavenPlugin)
 		project.plugins.apply(SigningPlugin)
 		project.plugins.apply("io.spring.convention.ossrh")
@@ -29,7 +31,9 @@ public class MavenBomPlugin implements Plugin<Project> {
 
 		project.rootProject.allprojects.each { p ->
 			p.plugins.withType(io.spring.gradle.convention.SpringMavenPlugin) {
-				project.mavenBom.projects.add(p)
+				if (!project.name.equals(p.name)) {
+					project.mavenBom.projects.add(p)
+				}
 			}
 		}
 
@@ -40,6 +44,10 @@ public class MavenBomPlugin implements Plugin<Project> {
 			deployArtifacts.dependsOn project.tasks.artifactoryPublish
 		} else {
 			deployArtifacts.dependsOn project.tasks.uploadArchives
+		}
+
+		project.artifacts {
+			archives project.mavenBom.bomFile
 		}
 	}
 }
