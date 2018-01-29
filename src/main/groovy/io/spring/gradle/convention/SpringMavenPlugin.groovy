@@ -149,10 +149,6 @@ public class SpringMavenPlugin implements Plugin<Project> {
 		pom.project {
 			boolean isWar = project.hasProperty("war");
 			String projectVersion = String.valueOf(project.getVersion());
-			boolean isSnapshot = projectVersion.endsWith("-SNAPSHOT");
-			boolean isRelease = projectVersion.endsWith(".RELEASE");
-			boolean isMilestone = !isSnapshot && !isRelease;
-
 			String projectName = Utils.getProjectName(project);
 
 			if(isWar) {
@@ -195,14 +191,14 @@ public class SpringMavenPlugin implements Plugin<Project> {
 					'm2eclipse.wtp.contextRoot' '/'
 				}
 			}
-			if(isSnapshot) {
+			if (Utils.isSnapshot(project)) {
 				repositories {
 					repository {
 						id 'spring-snapshot'
 						url 'https://repo.spring.io/snapshot'
 					}
 				}
-			} else if(!isRelease) {
+			} else if (!Utils.isRelease(project)) {
 				repositories {
 					repository {
 						id 'spring-milestone'
