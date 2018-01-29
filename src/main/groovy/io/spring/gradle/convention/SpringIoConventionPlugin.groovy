@@ -61,7 +61,7 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 		if(!platformBomVersion) {
 			return
 		}
-		boolean isRelease = platformBomVersion.endsWith('.RELEASE') || platformBomVersion.matches('^.*?\\.SR\\d+$')
+		boolean isRelease = platformBomVersion.endsWith('-RELEASE') || platformBomVersion.matches('^.*?-SR\\d+$')
 		boolean isSnapshot = platformBomVersion.endsWith('-SNAPSHOT')
 		boolean isMilestone = !(isRelease || isSnapshot)
 		if(isSnapshot) {

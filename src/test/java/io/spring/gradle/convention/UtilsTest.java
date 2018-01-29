@@ -31,9 +31,38 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void getProjectNameWhenEndsWithBuildThenStippedOut() {
+	public void getProjectNameWhenEndsWithBuildThenStrippedOut() {
 		when(rootProject.getName()).thenReturn("spring-security-build");
 
 		assertThat(Utils.getProjectName(project)).isEqualTo("spring-security");
 	}
+
+	@Test
+	public void isSnapshot() {
+		when(project.getVersion()).thenReturn("1.0.0.BUILD-SNAPSHOT");
+
+		assertThat(Utils.isSnapshot(project)).isTrue();
+	}
+
+	@Test
+	public void isMilestone() {
+		when(project.getVersion()).thenReturn("1.0.0.M1");
+
+		assertThat(Utils.isMilestone(project)).isTrue();
+	}
+
+	@Test
+	public void isReleaseWithDot() {
+		when(project.getVersion()).thenReturn("1.0.0.RELEASE");
+
+		assertThat(Utils.isRelease(project)).isTrue();
+	}
+
+	@Test
+	public void isReleaseWithDash() {
+		when(project.getVersion()).thenReturn("Theme-RELEASE");
+
+		assertThat(Utils.isRelease(project)).isTrue();
+	}
+
 }

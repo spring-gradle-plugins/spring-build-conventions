@@ -23,7 +23,7 @@ public class Utils {
 
 	static boolean isRelease(Project project) {
 		String projectVersion = projectVersion(project);
-		return projectVersion.endsWith(".RELEASE");
+		return projectVersion.endsWith("RELEASE");
 	}
 
 	private static String projectVersion(Project project) {
