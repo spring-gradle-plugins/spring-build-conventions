@@ -17,6 +17,7 @@ package io.spring.gradle.convention
 
 import io.spring.gradle.testkit.junit.rules.TestKit
 import org.gradle.testkit.runner.BuildResult
+import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Rule
 import spock.lang.Specification
 
@@ -122,5 +123,18 @@ class ShowcaseITest extends Specification {
 			<developerConnection>scm:git:git://github.com/spring-projects/spring-security</developerConnection>
 			<url>https://github.com/spring-projects/spring-security</url>
 		</scm>""".replaceAll('\\s',''))
+
+		and: 'bom created'
+		File bom = new File(testKit.getRootDir(), 'bom/build/poms/pom-default.xml')
+		bom.exists()
+		String bomText = bom.getText()
+		bomText.contains("""<artifactId>sgbcs-core</artifactId>""")
+
+		when: 'mavenBom ran again'
+		result = testKit.withProjectResource("samples/showcase/")
+				.withArguments('mavenBom','--stacktrace')
+				.build();
+		then: 'mavenBom is not up to date since install is never up to date'
+		result.task(':bom:mavenBom').getOutcome() == TaskOutcome.SUCCESS
 	}
 }
