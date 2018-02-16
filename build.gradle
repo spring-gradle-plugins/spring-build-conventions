@@ -26,7 +26,7 @@ dependencies {
 	compile 'io.spring.gradle:propdeps-plugin:0.0.10.RELEASE'
 	compile 'io.spring.gradle:spring-io-plugin:0.0.8.RELEASE'
 	compile 'org.akhikhl.gretty:gretty:2.0.0'
-	compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+	compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.7'
 	compile 'org.hidetake:gradle-ssh-plugin:2.9.0'
 	compile('org.jfrog.buildinfo:build-info-extractor-gradle:4.5.2') {
 		exclude module: 'groovy-all'
