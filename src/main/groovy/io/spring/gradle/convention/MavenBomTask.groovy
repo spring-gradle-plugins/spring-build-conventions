@@ -2,12 +2,14 @@ package io.spring.gradle.convention
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
 public class MavenBomTask extends DefaultTask {
 
 	Set<Project> projects = []
 
+	@OutputFile
 	File bomFile
 
 	public MavenBomTask() {
@@ -15,6 +17,7 @@ public class MavenBomTask extends DefaultTask {
 		this.description = "Generates a Maven Build of Materials (BOM). See http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Importing_Dependencies"
 		this.projects = project.subprojects
 		this.bomFile = project.file("${->project.buildDir}/maven-bom/${->project.name}-${->project.version}.txt")
+		this.outputs.upToDateWhen { false }
 	}
 
 	@TaskAction
