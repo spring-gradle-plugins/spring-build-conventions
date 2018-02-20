@@ -13,17 +13,18 @@ public class Utils {
 	}
 
 	static boolean isSnapshot(Project project) {
-		String projectVersion = projectVersion(project);
-		return projectVersion.endsWith("-SNAPSHOT");
+		String projectVersion = projectVersion(project)
+		return projectVersion.matches('^.*[.-]BUILD-SNAPSHOT$')
 	}
 
 	static boolean isMilestone(Project project) {
-		return !isSnapshot(project) && !isRelease(project);
+		String projectVersion = projectVersion(project)
+		return projectVersion.matches('^.*[.-]M\\d+$') || projectVersion.matches('^.*[.-]RC\\d+$')
 	}
 
 	static boolean isRelease(Project project) {
-		String projectVersion = projectVersion(project);
-		return projectVersion.endsWith("RELEASE");
+		String projectVersion = projectVersion(project)
+		return projectVersion.matches('^.*[.-]RELEASE$') || projectVersion.matches('^.*-SR\\d+$')
 	}
 
 	private static String projectVersion(Project project) {

@@ -38,31 +38,94 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void isSnapshot() {
+	public void isSnapshotValidWithDot() {
 		when(project.getVersion()).thenReturn("1.0.0.BUILD-SNAPSHOT");
 
 		assertThat(Utils.isSnapshot(project)).isTrue();
 	}
 
 	@Test
-	public void isMilestone() {
+	public void isSnapshotValidWithDash() {
+		when(project.getVersion()).thenReturn("Theme-BUILD-SNAPSHOT");
+
+		assertThat(Utils.isSnapshot(project)).isTrue();
+	}
+
+	@Test
+	public void isSnapshotInvalid() {
+		when(project.getVersion()).thenReturn("1.0.0.SNAPSHOT");
+
+		assertThat(Utils.isSnapshot(project)).isFalse();
+	}
+
+	@Test
+	public void isMilestoneValidWithDot() {
 		when(project.getVersion()).thenReturn("1.0.0.M1");
 
 		assertThat(Utils.isMilestone(project)).isTrue();
 	}
 
 	@Test
-	public void isReleaseWithDot() {
+	public void isMilestoneValidWithDash() {
+		when(project.getVersion()).thenReturn("Theme-M1");
+
+		assertThat(Utils.isMilestone(project)).isTrue();
+	}
+
+	@Test
+	public void isMilestoneInvalid() {
+		when(project.getVersion()).thenReturn("1.0.0.M");
+
+		assertThat(Utils.isMilestone(project)).isFalse();
+	}
+
+	@Test
+	public void isReleaseCandidateValidWithDot() {
+		when(project.getVersion()).thenReturn("1.0.0.RC1");
+
+		assertThat(Utils.isMilestone(project)).isTrue();
+	}
+
+	@Test
+	public void isReleaseCandidateValidWithDash() {
+		when(project.getVersion()).thenReturn("Theme-RC1");
+
+		assertThat(Utils.isMilestone(project)).isTrue();
+	}
+
+	@Test
+	public void isReleaseCandidateInvalid() {
+		when(project.getVersion()).thenReturn("1.0.0.RC");
+
+		assertThat(Utils.isMilestone(project)).isFalse();
+	}
+
+	@Test
+	public void isReleaseValidWithDot() {
 		when(project.getVersion()).thenReturn("1.0.0.RELEASE");
 
 		assertThat(Utils.isRelease(project)).isTrue();
 	}
 
 	@Test
-	public void isReleaseWithDash() {
+	public void isReleaseValidWithDash() {
 		when(project.getVersion()).thenReturn("Theme-RELEASE");
 
 		assertThat(Utils.isRelease(project)).isTrue();
+	}
+
+	@Test
+	public void isServiceReleaseValid() {
+		when(project.getVersion()).thenReturn("Theme-SR1");
+
+		assertThat(Utils.isRelease(project)).isTrue();
+	}
+
+	@Test
+	public void isServiceReleaseInvalid() {
+		when(project.getVersion()).thenReturn("Theme.SR1");
+
+		assertThat(Utils.isRelease(project)).isFalse();
 	}
 
 }
