@@ -198,7 +198,8 @@ public class SpringMavenPlugin implements Plugin<Project> {
 						url 'https://repo.spring.io/snapshot'
 					}
 				}
-			} else if (!Utils.isRelease(project)) {
+			}
+			else if (Utils.isMilestone(project)) {
 				repositories {
 					repository {
 						id 'spring-milestone'

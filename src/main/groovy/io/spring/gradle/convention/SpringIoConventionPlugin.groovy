@@ -1,16 +1,10 @@
 package io.spring.gradle.convention
 
-import io.spring.gradle.dependencymanagement.DependencyManagementPlugin
-import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
-import io.spring.gradle.dependencymanagement.dsl.GeneratedPomCustomizationHandler
 import io.spring.gradle.propdeps.PropDepsPlugin
 import io.spring.gradle.springio.SpringIoPlugin
-import org.gradle.api.Action
-import org.gradle.api.artifacts.repositories.MavenArtifactRepository
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 
 /**
  * This will add the Spring IO Plugin if it sees either springIoVersion or platformVersion property defined. If platformVersion
@@ -58,16 +52,13 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 	}
 
 	private void addMissingSpringRepository(Project project, String platformBomVersion) {
-		if(!platformBomVersion) {
+		if (!platformBomVersion) {
 			return
 		}
-		boolean isRelease = platformBomVersion.endsWith('-RELEASE') || platformBomVersion.matches('^.*?-SR\\d+$')
-		boolean isSnapshot = platformBomVersion.endsWith('-SNAPSHOT')
-		boolean isMilestone = !(isRelease || isSnapshot)
-		if(isSnapshot) {
+		if (platformBomVersion.matches('^.*[.-]BUILD-SNAPSHOT$')) {
 			addMavenRepositoryIfMissing(project,'https://repo.spring.io/libs-snapshot')
 		}
-		if(isMilestone) {
+		if (platformBomVersion.matches('^.*[.-]M\\d+$') || platformBomVersion.matches('^.*[.-]RC\\d+$')) {
 			addMavenRepositoryIfMissing(project,'https://repo.spring.io/libs-milestone')
 		}
 	}

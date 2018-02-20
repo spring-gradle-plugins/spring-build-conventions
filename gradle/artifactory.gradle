@@ -1,4 +1,4 @@
-def isSnapshot = version?.endsWith("-SNAPSHOT")
+def isSnapshot = version?.matches(/^.*[.-]BUILD-SNAPSHOT$/)
 
 artifactory {
 	contextUrl = 'https://repo.spring.io'
