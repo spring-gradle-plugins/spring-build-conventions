@@ -40,10 +40,10 @@ public class MavenBomPlugin implements Plugin<Project> {
 		def deployArtifacts = project.task("deployArtifacts")
 		deployArtifacts.group = 'Deploy tasks'
 		deployArtifacts.description = "Deploys the artifacts to either Artifactor or Maven Central"
-		if(Utils.isSnapshot(project)) {
-			deployArtifacts.dependsOn project.tasks.artifactoryPublish
-		} else {
+		if(Utils.isRelease(project)) {
 			deployArtifacts.dependsOn project.tasks.uploadArchives
+		} else {
+			deployArtifacts.dependsOn project.tasks.artifactoryPublish
 		}
 
 		project.artifacts {
