@@ -35,12 +35,11 @@ class CheckstylePlugin implements Plugin<Project> {
 			def checkstyleDir = project.rootProject.file(CHECKSTYLE_DIR)
 			if (checkstyleDir.exists() && checkstyleDir.directory) {
 				project.getPluginManager().apply('checkstyle')
-				project.dependencies.add('checkstyle', 'io.spring.javaformat:spring-javaformat-checkstyle:0.0.5')
+				project.dependencies.add('checkstyle', 'io.spring.javaformat:spring-javaformat-checkstyle:0.0.6')
 
 				project.checkstyle {
-					configFile = project.rootProject.file("$CHECKSTYLE_DIR/checkstyle.xml")
-					configProperties.configDir = configFile.parentFile
-					toolVersion = '6.16.1'
+					configDir = checkstyleDir
+					toolVersion = '8.12'
 				}
 			}
 		}
