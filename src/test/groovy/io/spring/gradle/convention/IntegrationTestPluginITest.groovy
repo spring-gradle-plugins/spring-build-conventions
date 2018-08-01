@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2016-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -33,8 +33,8 @@ class IntegrationTestPluginITest extends Specification {
 		then:
 		result.task(":check").outcome == SUCCESS
 		and:
-		new File(testKit.getRootDir(), 'build/integration-test-results/').exists()
-		new File(testKit.getRootDir(), 'build/reports/integration-tests/').exists()
+		new File(testKit.getRootDir(), 'build/test-results/integrationTest/').exists()
+		new File(testKit.getRootDir(), 'build/reports/tests/integrationTest/').exists()
 	}
 
 	def "check with propdeps"() {
@@ -45,8 +45,8 @@ class IntegrationTestPluginITest extends Specification {
 		then:
 		result.task(":check").outcome == SUCCESS
 		and:
-		new File(testKit.getRootDir(), 'build/integration-test-results/').exists()
-		new File(testKit.getRootDir(), 'build/reports/integration-tests/').exists()
+		new File(testKit.getRootDir(), 'build/test-results/integrationTest/').exists()
+		new File(testKit.getRootDir(), 'build/reports/tests/integrationTest/').exists()
 	}
 
 	def "check with groovy plugin"() {
@@ -57,7 +57,7 @@ class IntegrationTestPluginITest extends Specification {
 		then:
 		result.task(":check").outcome == SUCCESS
 		and:
-		new File(testKit.getRootDir(), 'build/integration-test-results/').exists()
-		new File(testKit.getRootDir(), 'build/reports/integration-tests/').exists()
+		new File(testKit.getRootDir(), 'build/test-results/integrationTest/').exists()
+		new File(testKit.getRootDir(), 'build/reports/tests/integrationTest/').exists()
 	}
 }

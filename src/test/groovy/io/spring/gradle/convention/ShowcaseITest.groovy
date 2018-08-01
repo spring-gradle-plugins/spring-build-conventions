@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2016-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -21,8 +21,6 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Rule
 import spock.lang.Specification
 
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-
 class ShowcaseITest extends Specification {
 	@Rule final TestKit testKit = new TestKit()
 
@@ -38,8 +36,8 @@ class ShowcaseITest extends Specification {
 		and: 'javadoc api works'
 
 		and: 'integration tests run'
-		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/integration-test-results/').exists()
-		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/reports/integration-tests/').exists()
+		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/test-results/integrationTest/').exists()
+		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/reports/tests/integrationTest/').exists()
 	}
 
 	def "springio"() {

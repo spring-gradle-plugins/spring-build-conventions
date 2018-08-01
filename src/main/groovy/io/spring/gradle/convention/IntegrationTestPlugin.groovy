@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2016-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,12 +16,11 @@
 package io.spring.gradle.convention
 
 import io.spring.gradle.propdeps.PropDepsPlugin
-import org.gradle.api.plugins.GroovyPlugin
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.plugins.GroovyPlugin
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.testing.Test
 import org.gradle.plugins.ide.eclipse.EclipsePlugin
 import org.gradle.plugins.ide.idea.IdeaPlugin
@@ -77,10 +76,6 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 			dependsOn 'jar'
 			testClassesDirs = project.sourceSets.integrationTest.output.classesDirs
 			classpath = project.sourceSets.integrationTest.runtimeClasspath
-			reports {
-				html.destination = project.file("$project.buildDir/reports/integration-tests/")
-				junitXml.destination = project.file("$project.buildDir/integration-test-results/")
-			}
 			shouldRunAfter project.tasks.test
 		}
 		project.tasks.check.dependsOn integrationTestTask
