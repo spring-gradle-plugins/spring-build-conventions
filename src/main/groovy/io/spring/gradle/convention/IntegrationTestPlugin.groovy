@@ -89,6 +89,7 @@ public class IntegrationTestPlugin implements Plugin<Project> {
 			project.idea {
 				module {
 					testSourceDirs += project.file('src/integration-test/java')
+					scopes.TEST.plus += [ project.configurations.integrationTestCompile ]
 				}
 			}
 		}
