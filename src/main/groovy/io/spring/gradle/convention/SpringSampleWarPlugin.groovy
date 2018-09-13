@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2016-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -35,7 +35,7 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 		PluginManager pluginManager = project.getPluginManager();
 
 		pluginManager.apply("war");
-		pluginManager.apply("org.akhikhl.gretty");
+		pluginManager.apply("org.gretty");
 
 		project.gretty {
 			servletContainer = 'tomcat8'
