@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2016-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,23 +16,26 @@
 
 package io.spring.gradle.convention
 
-import org.gradle.api.Plugin;
+import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.plugins.JavaPlugin
 
 /**
  * Adds a version of jacoco to use and makes check depend on jacocoTestReport.
  *
  * @author Rob Winch
  */
-public class JacocoPlugin implements Plugin<Project> {
+class JacocoPlugin implements Plugin<Project> {
 
 	@Override
-	public void apply(Project project) {
+	void apply(Project project) {
 		project.plugins.withType(JavaPlugin) {
 			project.getPluginManager().apply("jacoco")
-
 			project.tasks.check.dependsOn project.tasks.jacocoTestReport
+
+			project.jacoco {
+				toolVersion = '0.8.2'
+			}
 		}
 	}
 }
