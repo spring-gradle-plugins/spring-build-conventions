@@ -24,6 +24,7 @@ public class MavenBomPlugin implements Plugin<Project> {
 		project.task(MAVEN_BOM_TASK_NAME, type: MavenBomTask, group: 'Generate', description: 'Configures the pom as a Maven Build of Materials (BOM)')
 		project.install.dependsOn project.mavenBom
 		project.tasks.uploadArchives.dependsOn project.mavenBom
+		project.tasks.artifactoryPublish.dependsOn project.mavenBom
 
 		project.plugins.withType(SonarQubePlugin) {
 			project.sonarqube.skipProject = true
