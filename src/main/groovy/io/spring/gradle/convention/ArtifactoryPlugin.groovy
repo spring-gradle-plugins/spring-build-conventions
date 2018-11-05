@@ -40,12 +40,19 @@ class ArtifactoryPlugin implements Plugin<Project> {
 		}
 
 		project.artifactoryPublish {
-			publishConfigs 'archives'
 			publishIvy false
 			properties = [
 					'bintray.package': "${project.group}:${name}",
 					'bintray.version': "${project.version}"
 			]
+		}
+
+		project.artifactory {
+			publish {
+				defaults {
+					publishConfigs('archives')
+				}
+			}
 		}
 	}
 }
