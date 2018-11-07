@@ -14,14 +14,17 @@
  * the License.
  */
 
-package io.spring.gradle.convention;
+package io.spring.gradle.convention
 
+import org.akhikhl.gretty.ServerConfig;
 import org.gradle.api.Project
 import org.gradle.api.Task;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.testing.Test
+
+import static org.akhikhl.gretty.ServerConfig.RANDOM_FREE_PORT
 
 /**
  * @author Rob Winch
@@ -48,10 +51,10 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 			description = 'Prepares the app server for integration tests'
 			doFirst {
 				project.gretty {
-					httpPort = randomPort()
-					httpsPort = randomPort()
-					servicePort = randomPort()
-					statusPort = randomPort()
+					httpPort = RANDOM_FREE_PORT
+					httpsPort = RANDOM_FREE_PORT
+					servicePort = RANDOM_FREE_PORT
+					statusPort = RANDOM_FREE_PORT
 				}
 			}
 		}
@@ -73,8 +76,8 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 			def gretty = project.gretty
 			String host = project.gretty.host ?: 'localhost'
 			boolean isHttps = gretty.httpsEnabled
-			int httpPort = gretty.httpPort
-			int httpsPort = gretty.httpsPort
+			Integer httpPort = integrationTest.systemProperties['gretty.httpPort']
+			Integer httpsPort = integrationTest.systemProperties['gretty.httpsPort']
 			int port = isHttps ? httpsPort : httpPort
 			String contextPath = project.gretty.contextPath
 			String httpBaseUrl = "http://${host}:${httpPort}${contextPath}"
@@ -90,12 +93,5 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 			integrationTest.systemProperty 'geb.build.baseUrl', baseUrl
 			integrationTest.systemProperty 'geb.build.reportsDir', 'build/geb-reports'
 		}
-	}
-
-	def randomPort() {
-		def socket = new ServerSocket(0)
-		int result = socket.localPort
-		socket.close()
-		result
 	}
 }
