@@ -2,6 +2,7 @@ package io.spring.gradle.convention
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.PluginManager
 
 public class RootProjectPlugin implements Plugin<Project> {
@@ -9,6 +10,7 @@ public class RootProjectPlugin implements Plugin<Project> {
 	@Override
 	public void apply(Project project) {
 		PluginManager pluginManager = project.getPluginManager()
+		pluginManager.apply(BasePlugin)
 		pluginManager.apply(SchemaPlugin)
 		pluginManager.apply("org.sonarqube")
 
