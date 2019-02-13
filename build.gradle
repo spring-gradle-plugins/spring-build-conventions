@@ -1,3 +1,9 @@
+/* buildscript {
+	dependencies {
+		classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
+	}
+} */
+
 plugins {
 	id "java-gradle-plugin"
 	id "com.jfrog.artifactory" version '4.7.5'
@@ -34,7 +40,8 @@ dependencies {
 	compile 'io.spring.gradle:docbook-reference-plugin:0.3.1'
 	compile 'io.spring.gradle:propdeps-plugin:0.0.10.RELEASE'
 	compile 'io.spring.gradle:spring-io-plugin:0.0.8.RELEASE'
-	compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.8.1'
+	compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
+	compile 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
 	compile 'org.hidetake:gradle-ssh-plugin:2.9.0'
 	compile 'org.jfrog.buildinfo:build-info-extractor-gradle:4.7.5'
 	compile 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2'
@@ -44,4 +51,5 @@ dependencies {
 	testCompile 'org.assertj:assertj-core:3.11.1'
 	testCompile 'org.mockito:mockito-core:2.22.0'
 	testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
+	compile 'org.jruby:jruby-complete:9.2.5.0'
 }
