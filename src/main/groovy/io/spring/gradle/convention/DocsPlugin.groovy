@@ -19,31 +19,20 @@ public class DocsPlugin implements Plugin<Project> {
 	@Override
 	public void apply(Project project) {
 
-/*    project.buildscript {
-      project.buildscript.repositories {
-        maven { url 'https://repo.spring.io/plugins-release' }
-      }
-      project.buildscript.dependencies {
-        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
-      }
-    } */
-
 		PluginManager pluginManager = project.getPluginManager();
 		pluginManager.apply("org.asciidoctor.convert");
 		pluginManager.apply(DeployDocsPlugin);
 		pluginManager.apply(JavadocApiPlugin);
-//    pluginManager.apply('docbook-reference')
 
 		project.asciidoctorj {
-			version = '1.6.1'
+			version = '1.5.6'
 		}
 
-//    project.asciidoctor-pdf {
-//      version = '1.5.0-alpha.16'
-//    }
+    String projectName = Utils.getProjectName(project);
+    String pdfFilename = projectName + "-reference.pdf";
 
 		Task docsZip = project.tasks.create('docsZip', Zip) {
-			dependsOn 'api', 'asciidoctor' //'reference'
+			dependsOn 'api', 'asciidoctor'
 			group = 'Distribution'
 			baseName = project.rootProject.name
 			classifier = 'docs'
@@ -53,7 +42,8 @@ public class DocsPlugin implements Plugin<Project> {
 			from(project.tasks.asciidoctor.outputs) {
 				into 'reference'
 				include 'html5/**'
-//        include 'pdf/**'
+        include 'pdf/**'
+        rename "index.pdf", pdfFilename
 			}
 			from(project.tasks.api.outputs) {
 				into 'api'
@@ -61,8 +51,6 @@ public class DocsPlugin implements Plugin<Project> {
 			into 'docs'
 			duplicatesStrategy 'exclude'
 		}
-
-		String projectName = Utils.getProjectName(project);
 
     def docResourcesVersion = '0.1.0.RELEASE'
 
@@ -77,7 +65,7 @@ public class DocsPlugin implements Plugin<Project> {
       }
     });
 
-    Task copyDocResources = project.tasks.create("copyDocResources", Sync.class) {
+    Task assembleDocs = project.tasks.create("assembleDocs", Sync.class) {
       from {
         project.configurations.docResources.collect { project.zipTree(it) }
       }
@@ -88,7 +76,7 @@ public class DocsPlugin implements Plugin<Project> {
     }
 
 		project.tasks.asciidoctor {
-      dependsOn 'copyDocResources'
+      dependsOn 'assembleDocs'
       sourceDir "${project.buildDir}/asciidoc/working"
       outputDir "${project.buildDir}/asciidoc/output"
       sources {
@@ -124,14 +112,6 @@ public class DocsPlugin implements Plugin<Project> {
 					'gh-samples-url': "$ghUrl/samples",
 					'docinfo' : 'shared'
 		}
-
-/*		project.reference {
-			dependsOn 'asciidoctor'
-			sourceDir = new File("${project.buildDir}/asciidoc/output")
-			pdfFilename = "${projectName}-reference.pdf"
-      epubFilename = "${projectName}-reference.epub"
-			expandPlaceholders = ""
-		} */
 
 		Task docs = project.tasks.create("docs") {
 			group = 'Documentation'

@@ -39,13 +39,8 @@ class DocsPluginITest extends Specification {
 		and:
 		result.task(":docsZip").outcome == SUCCESS
 		and:
-//		result.task(":reference").outcome == SUCCESS
-//		and:
 		def names = new ZipFile(new File(testKit.getRootDir(), 'build/distributions/simple-docs.zip')).entries()*.name
 		names.contains("docs/reference/html5/index.html")
-//		names.contains("docs/reference/pdf/index.pdf")
-//		names.contains("docs/reference/html/index.html")
-//		names.contains("docs/reference/htmlsingle/index.html")
-//		names.contains("docs/reference/epub/simple-reference.epub")
+		names.contains("docs/reference/pdf/simple-reference.pdf")
 	}
 }
