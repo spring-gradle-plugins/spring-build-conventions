@@ -5,5 +5,5 @@ asciidoctor {
 	attributes \
 		'build-gradle': project.buildFile,
 		'sourcedir': project.sourceSets.main.java.srcDirs[0],
-		'endpoint-url': 'http://example.org'
+		'endpoint-url': 'https://example.org'
 }
