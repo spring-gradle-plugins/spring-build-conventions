@@ -156,10 +156,10 @@ public class SpringMavenPlugin implements Plugin<Project> {
 			}
 			name = project.name
 			description = project.name
-			url = 'http://spring.io/spring-security'
+			url = 'https://spring.io/spring-security'
 			organization {
 				name = 'spring.io'
-				url = 'http://spring.io/'
+				url = 'https://spring.io/'
 			}
 			licenses {
 				license {
