@@ -14,7 +14,7 @@ public class MavenBomTask extends DefaultTask {
 
 	public MavenBomTask() {
 		this.group = "Generate"
-		this.description = "Generates a Maven Build of Materials (BOM). See http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Importing_Dependencies"
+		this.description = "Generates a Maven Build of Materials (BOM). See https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Importing_Dependencies"
 		this.projects = project.subprojects
 		this.bomFile = project.file("${->project.buildDir}/maven-bom/${->project.name}-${->project.version}.txt")
 		this.outputs.upToDateWhen { false }
@@ -24,7 +24,7 @@ public class MavenBomTask extends DefaultTask {
 	public void configureBom() {
 //		project.configurations.archives.artifacts.clear()
 		bomFile.parentFile.mkdirs()
-		bomFile.write("Maven Build of Materials (BOM). See http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Importing_Dependencies")
+		bomFile.write("Maven Build of Materials (BOM). See https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Importing_Dependencies")
 		project.artifacts {
 			// work around GRADLE-2406 by attaching text artifact
 			archives(bomFile)

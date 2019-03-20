@@ -98,12 +98,12 @@ class ShowcaseITest extends Specification {
 
 		and: 'adds description & url'
 		pomText.contains('<description>sgbcs-core</description>')
-		pomText.contains('<url>http://spring.io/spring-security</url>')
+		pomText.contains('<url>https://spring.io/spring-security</url>')
 
 		and: 'adds organization'
 		pomText.replaceAll('\\s','').contains('''<organization>
 			<name>spring.io</name>
-			<url>http://spring.io/</url>
+			<url>https://spring.io/</url>
 		</organization>'''.replaceAll('\\s',''))
 
 		and: 'adds licenses'
