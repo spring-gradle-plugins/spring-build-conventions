@@ -35,6 +35,7 @@ dependencies {
 	implementation 'io.spring.gradle:docbook-reference-plugin:0.3.1'
 	implementation 'io.spring.gradle:propdeps-plugin:0.0.10.RELEASE'
 	implementation 'io.spring.gradle:spring-io-plugin:0.0.8.RELEASE'
+	implementation 'io.spring.javaformat:spring-javaformat-gradle-plugin:0.0.11'
 	implementation 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.8.1'
 	implementation 'org.hidetake:gradle-ssh-plugin:2.9.0'
 	implementation 'org.jfrog.buildinfo:build-info-extractor-gradle:4.9.3'
