@@ -35,7 +35,7 @@ class CheckstylePlugin implements Plugin<Project> {
 			def checkstyleDir = project.rootProject.file(CHECKSTYLE_DIR)
 			if (checkstyleDir.exists() && checkstyleDir.directory) {
 				project.getPluginManager().apply('checkstyle')
-				project.dependencies.add('checkstyle', 'io.spring.javaformat:spring-javaformat-checkstyle:0.0.12')
+				project.dependencies.add('checkstyle', 'io.spring.javaformat:spring-javaformat-checkstyle:0.0.15')
 				project.dependencies.add('checkstyle', 'io.spring.nohttp:nohttp-checkstyle:0.0.3.RELEASE')
 
 				project.checkstyle {
