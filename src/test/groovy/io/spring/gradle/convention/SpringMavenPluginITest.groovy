@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2017 the original author or authors.
+ * Copyright 2016-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,6 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package io.spring.gradle.convention
 
 import io.spring.gradle.testkit.junit.rules.TestKit
@@ -23,14 +24,16 @@ import spock.lang.Specification
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class SpringMavenPluginITest extends Specification {
+
 	@Rule final TestKit testKit = new TestKit()
 
 	def "install"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/maven/install")
-			.withArguments('install', '-PspringIoVersion=Brussels-RELEASE')
+			.withArguments('install')
 			.build();
 		then: 'pom contains optional'
+		result.output.contains("SUCCESS")
 		File pom = new File(testKit.getRootDir(), 'build/poms/pom-default.xml')
 		pom.exists()
 		String pomText = pom.getText()
@@ -40,33 +43,17 @@ class SpringMavenPluginITest extends Specification {
 			<version>1.0</version>
 			<scope>compile</scope>
 			<optional>true</optional>
-		</dependency>""".replaceAll('\\s',''))
-	}
-
-	def "inline dependencies does not use spring io configurations"() {
-		when:
-		BuildResult result = testKit.withProjectResource("samples/maven/install-with-springio")
-				.withArguments('install', '-PspringIoVersion=Athens-RELEASE', '--stacktrace')
-				.build();
-		then: 'pom contains optional'
-		File pom = new File(testKit.getRootDir(), 'build/poms/pom-default.xml')
-		pom.exists()
-		String pomText = pom.getText()
-		pomText.replaceAll('\\s','').contains("""<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<scope>compile</scope>
-			<version>3.0.0.RELEASE</version>
 		</dependency>""".replaceAll('\\s',''))
 	}
 
 	def "upload"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/maven/upload")
-				.withArguments('uploadArchives', '-PspringIoVersion=Brussels-RELEASE')
+				.withArguments('uploadArchives')
 				.forwardOutput()
 				.build();
 		then: 'pom contains optional'
+		result.output.contains("SUCCESS")
 		File pom = new File(testKit.getRootDir(), 'build/poms/pom-default.xml')
 		pom.exists()
 		String pomText = pom.getText()
@@ -76,6 +63,7 @@ class SpringMavenPluginITest extends Specification {
 			<version>1.0</version>
 			<scope>compile</scope>
 			<optional>true</optional>
-		</dependency>""".replaceAll('\\s',''))
+			</dependency>""".replaceAll('\\s',''))
 	}
+
 }
