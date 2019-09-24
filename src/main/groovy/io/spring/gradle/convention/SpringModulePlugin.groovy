@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2016-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -23,25 +23,26 @@ import org.gradle.api.plugins.PluginManager;
 /**
  * @author Rob Winch
  */
-public class SpringModulePlugin extends AbstractSpringJavaPlugin {
+class SpringModulePlugin extends AbstractSpringJavaPlugin {
 
 	@Override
-	public void additionalPlugins(Project project) {
+	void additionalPlugins(Project project) {
 		PluginManager pluginManager = project.getPluginManager();
 		pluginManager.apply(MavenPlugin.class);
 		pluginManager.apply("io.spring.convention.maven");
 		pluginManager.apply("io.spring.convention.artifactory");
-		pluginManager.apply("io.spring.convention.springio");
 		pluginManager.apply("io.spring.convention.jacoco");
 		pluginManager.apply("io.spring.convention.merge");
 
 		def deployArtifacts = project.task("deployArtifacts")
 		deployArtifacts.group = 'Deploy tasks'
 		deployArtifacts.description = "Deploys the artifacts to either Artifactor or Maven Central"
-		if(Utils.isRelease(project)) {
+		if (Utils.isRelease(project)) {
 			deployArtifacts.dependsOn project.tasks.uploadArchives
-		} else {
+		}
+		else {
 			deployArtifacts.dependsOn project.tasks.artifactoryPublish
 		}
 	}
+
 }

@@ -3,5 +3,3 @@ plugins {
 	id 'io.spring.convention.spring-module' apply false
 	id 'io.spring.convention.spring-sample' apply false
 }
-
-ext.springIoVersion = 'Athens-SR2'

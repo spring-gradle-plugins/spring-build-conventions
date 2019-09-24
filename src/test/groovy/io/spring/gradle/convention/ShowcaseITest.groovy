@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2018 the original author or authors.
+ * Copyright 2016-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,6 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package io.spring.gradle.convention
 
 import io.spring.gradle.testkit.junit.rules.TestKit
@@ -22,6 +23,7 @@ import org.junit.Rule
 import spock.lang.Specification
 
 class ShowcaseITest extends Specification {
+
 	@Rule final TestKit testKit = new TestKit()
 
 	def "build"() {
@@ -38,16 +40,6 @@ class ShowcaseITest extends Specification {
 		and: 'integration tests run'
 		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/test-results/integrationTest/').exists()
 		new File(testKit.getRootDir(), 'samples/sgbcs-sample-war/build/reports/tests/integrationTest/').exists()
-	}
-
-	def "springio"() {
-		when:
-		BuildResult result = testKit.withProjectResource("samples/showcase/")
-				.withArguments('-PplatformVersion=Brussels-RELEASE','springIoTest','--stacktrace')
-				.forwardOutput()
-				.build();
-		then:
-		result.output.contains("SUCCESS")
 	}
 
 	def "install"() {
@@ -73,7 +65,7 @@ class ShowcaseITest extends Specification {
 		<scope>compile</scope>
 		<optional>true</optional>
 		<version>1.1.9</version>
-	</dependency>""".replaceAll('\\s',''))
+		</dependency>""".replaceAll('\\s',''))
 
 		and: 'adds author'
 		pomText.replaceAll('\\s','').contains("""<developers>
@@ -135,4 +127,5 @@ class ShowcaseITest extends Specification {
 		then: 'mavenBom is not up to date since install is never up to date'
 		result.task(':bom:mavenBom').getOutcome() == TaskOutcome.SUCCESS
 	}
+
 }
