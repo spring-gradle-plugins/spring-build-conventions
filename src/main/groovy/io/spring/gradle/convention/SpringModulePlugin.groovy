@@ -16,7 +16,8 @@
 
 package io.spring.gradle.convention;
 
-import org.gradle.api.Project;
+import org.gradle.api.Project
+import org.gradle.api.plugins.JavaLibraryPlugin;
 import org.gradle.api.plugins.MavenPlugin;
 import org.gradle.api.plugins.PluginManager;
 
@@ -28,6 +29,7 @@ class SpringModulePlugin extends AbstractSpringJavaPlugin {
 	@Override
 	void additionalPlugins(Project project) {
 		PluginManager pluginManager = project.getPluginManager();
+		pluginManager.apply(JavaLibraryPlugin.class)
 		pluginManager.apply(MavenPlugin.class);
 		pluginManager.apply("io.spring.convention.maven");
 		pluginManager.apply("io.spring.convention.artifactory");
@@ -36,7 +38,7 @@ class SpringModulePlugin extends AbstractSpringJavaPlugin {
 
 		def deployArtifacts = project.task("deployArtifacts")
 		deployArtifacts.group = 'Deploy tasks'
-		deployArtifacts.description = "Deploys the artifacts to either Artifactor or Maven Central"
+		deployArtifacts.description = "Deploys the artifacts to either Artifactory or Maven Central"
 		if (Utils.isRelease(project)) {
 			deployArtifacts.dependsOn project.tasks.uploadArchives
 		}
