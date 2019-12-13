@@ -72,6 +72,19 @@ public class RepositoryConventionPluginTests {
 	}
 
 	@Test
+	public void applyWhenIsSnapshotWithForceReleaseThenShouldOnlyIncludeReleaseRepo() {
+		this.project.getExtensions().getByType(ExtraPropertiesExtension.class)
+				.set("forceMavenRepositories", "release");
+		this.project.setVersion("1.0.0.RELEASE");
+		this.project.getPluginManager().apply(RepositoryConventionPlugin.class);
+
+		RepositoryHandler repositories = this.project.getRepositories();
+		assertThat(repositories).hasSize(1);
+		assertThat(((MavenArtifactRepository) repositories.get(0)).getUrl().toString())
+				.isEqualTo("https://repo.spring.io/libs-release/");
+	}
+
+	@Test
 	public void applyWhenIsReleaseWithForceMilestoneThenShouldIncludeMilestoneRepo() {
 		this.project.getExtensions().getByType(ExtraPropertiesExtension.class)
 				.set("forceMavenRepositories", "milestone");
