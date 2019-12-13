@@ -23,16 +23,16 @@ class RepositoryConventionPlugin implements Plugin<Project> {
 
 	@Override
 	void apply(Project project) {
-		boolean isSnapshot = Utils.isSnapshot(project)
-		boolean isMilestone = Utils.isMilestone(project)
-
 		String[] forceMavenRepositories = ((String) project.findProperty("forceMavenRepositories"))?.split(',')
+		boolean isImplicitSnapshotRepository = forceMavenRepositories != null && Utils.isSnapshot(project)
+		boolean isImplicitMilestoneRepository = forceMavenRepositories != null && Utils.isMilestone(project)
+
 
 		String mavenUrl
-		if (isSnapshot || forceMavenRepositories?.contains('snapshot')) {
+		if (isImplicitSnapshotRepository || forceMavenRepositories?.contains('snapshot')) {
 			mavenUrl = 'https://repo.spring.io/libs-snapshot/'
 		}
-		else if (isMilestone || forceMavenRepositories?.contains('milestone')) {
+		else if (isImplicitMilestoneRepository || forceMavenRepositories?.contains('milestone')) {
 			mavenUrl = 'https://repo.spring.io/libs-milestone/'
 		}
 		else {
