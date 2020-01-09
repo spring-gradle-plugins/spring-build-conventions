@@ -67,9 +67,9 @@ public class DocsPlugin implements Plugin<Project> {
 
 		final Configuration config = project.getConfigurations().create("docResources");
 		config.defaultDependencies(new Action<DependencySet>() {
-		  public void execute(DependencySet dependencies) {
-		  dependencies.add(project.getDependencies().create("io.spring.docresources:spring-doc-resources:${docResourcesVersion}@zip"));
-		  }
+			public void execute(DependencySet dependencies) {
+				dependencies.add(project.getDependencies().create("io.spring.docresources:spring-doc-resources:${docResourcesVersion}@zip"));
+			}
 		});
 
 		project.tasks.asciidoctor {
