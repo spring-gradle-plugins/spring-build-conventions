@@ -97,6 +97,15 @@ public class DocsPlugin implements Plugin<Project> {
 			baseDirFollowsSourceDir()
 		}
 
+		project.tasks.asciidoctorPdf {
+			options doctype: 'book', eruby: 'erubis'
+			sources {
+				include "**/*.adoc"
+				exclude '_*/**'
+			}
+			baseDirFollowsSourceDir()
+		}
+
 		Task assembleDocs = project.tasks.create("assembleDocs", Sync.class) {
 			from {
 				project.configurations.docResources.collect { project.zipTree(it) }
