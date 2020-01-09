@@ -1,11 +1,13 @@
 package io.spring.gradle.convention
 
-import org.gradle.api.Task
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.plugins.PluginManager
-import org.gradle.api.tasks.bundling.Zip
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.DependencySet
+import org.gradle.api.plugins.PluginManager
+import org.gradle.api.tasks.bundling.Zip
 
 /**
  * Aggregates asciidoc, javadoc, and deploying of the docs into a single plugin
@@ -15,17 +17,16 @@ public class DocsPlugin implements Plugin<Project> {
 	@Override
 	public void apply(Project project) {
 		PluginManager pluginManager = project.getPluginManager();
-		pluginManager.apply("org.asciidoctor.convert");
+		pluginManager.apply("org.asciidoctor.jvm.convert");
+		pluginManager.apply("org.asciidoctor.jvm.pdf");
 		pluginManager.apply(DeployDocsPlugin);
 		pluginManager.apply(JavadocApiPlugin);
-		pluginManager.apply('docbook-reference')
 
-		project.asciidoctorj {
-			version = '1.5.4'
-		}
+		String projectName = Utils.getProjectName(project);
+		String pdfFilename = projectName + "-reference.pdf";
 
 		Task docsZip = project.tasks.create('docsZip', Zip) {
-			dependsOn 'api', 'reference'
+			dependsOn 'api', 'asciidoctor'
 			group = 'Distribution'
 			baseName = project.rootProject.name
 			classifier = 'docs'
@@ -33,11 +34,13 @@ public class DocsPlugin implements Plugin<Project> {
 				"Docs for deployment at docs.spring.io"
 
 			from(project.tasks.asciidoctor.outputs) {
-				into 'reference'
-				include 'html5/**'
+				into 'reference/html5'
+				include '**'
 			}
-			from(project.tasks.reference.outputs) {
-				into 'reference'
+			from(project.tasks.asciidoctorPdf.outputs) {
+				into 'reference/pdf'
+				include '**'
+				rename "index.pdf", pdfFilename
 			}
 			from(project.tasks.api.outputs) {
 				into 'api'
@@ -46,40 +49,54 @@ public class DocsPlugin implements Plugin<Project> {
 			duplicatesStrategy 'exclude'
 		}
 
-		String projectName = Utils.getProjectName(project);
+		def docResourcesVersion = "0.1.3.RELEASE"
+
+		final Configuration config = project.getConfigurations().create("docResources");
+		config.defaultDependencies(new Action<DependencySet>() {
+		  public void execute(DependencySet dependencies) {
+		  dependencies.add(project.getDependencies().create("io.spring.docresources:spring-doc-resources:${docResourcesVersion}@zip"));
+		  }
+		});
 
 		project.tasks.asciidoctor {
-			backends = ['docbook5','html5']
-			def ghTag = 'master'//snapshotBuild ? 'master' : project.version
-			def ghUrl = "https://github.com/spring-projects/${projectName}/tree/$ghTag"
-			options = [
-					eruby: 'erubis',
-			]
-			attributes = [
-					copycss : '',
-					icons : 'font',
-					'source-highlighter': 'prettify',
-					sectanchors : '',
-					toc2: '',
-					idprefix: '',
-					idseparator: '-',
-					doctype: 'book',
-					numbered: '',
-					'${projectName}-version' : project.version,
-					revnumber : project.version,
-					'gh-url': ghUrl,
-					'gh-samples-url': "$ghUrl/samples",
-					docinfo : ""
-			]
+			dependsOn 'assembleDocs', 'syncDocumentationSource'
+			sourceDir "${project.buildDir}/work/docs/asciidoc/"
+			sources {
+				include "**/*.adoc"
+				exclude '_*/**'
+			}
+			options doctype: 'book', eruby: 'erubis'
+			attributes([icons: 'font',
+						idprefix: '',
+						idseparator: '-',
+						docinfo: 'shared',
+						revnumber: project.version,
+						sectanchors: '',
+						sectnums: '',
+						'source-highlighter': 'highlight.js',
+						highlightjsdir: 'js/highlight',
+						'highlightjs-theme': 'github',
+						stylesheet: 'css/spring.css',
+						"linkcss": true,
+						'spring-version': project.version])
+			baseDirFollowsSourceDir()
 		}
 
-		project.reference {
-			dependsOn 'asciidoctor'
-			sourceDir = new File(project.asciidoctor.outputDir , 'docbook5')
-			pdfFilename = "${projectName}-reference.pdf"
-			epubFilename = "${projectName}-reference.epub"
-			expandPlaceholders = ""
+		Task assembleDocs = project.tasks.create("assembleDocs", Sync.class) {
+			from {
+				project.configurations.docResources.collect { project.zipTree(it) }
+			}
+			from "src/docs/asciidoc"
+			into "${project.asciidoctor.sourceDir}/"
 		}
+
+		Task syncDocumentationSource = project.tasks.create("syncDocumentationSource", Sync.class) {
+			from {
+				project.configurations.docResources.collect { project.zipTree(it) }
+			}
+			into "${project.asciidoctor.outputDir}"
+		}
+
 
 		Task docs = project.tasks.create("docs") {
 			group = 'Documentation'
