@@ -7,6 +7,7 @@ import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.plugins.PluginManager
+import org.gradle.api.tasks.Sync
 import org.gradle.api.tasks.bundling.Zip
 
 /**
@@ -16,6 +17,7 @@ public class DocsPlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(Project project) {
+
 		PluginManager pluginManager = project.getPluginManager();
 		pluginManager.apply("org.asciidoctor.jvm.convert");
 		pluginManager.apply("org.asciidoctor.jvm.pdf");
@@ -49,6 +51,18 @@ public class DocsPlugin implements Plugin<Project> {
 			duplicatesStrategy 'exclude'
 		}
 
+		project.repositories {
+		  maven { url 'https://repo.spring.io/plugins-release' }
+		}
+
+		project.configurations {
+			asciidoctorExtensions
+		}
+
+		project.dependencies {
+			asciidoctorExtensions 'io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.3.0.RELEASE'
+		}
+
 		def docResourcesVersion = "0.1.3.RELEASE"
 
 		final Configuration config = project.getConfigurations().create("docResources");
@@ -65,6 +79,7 @@ public class DocsPlugin implements Plugin<Project> {
 				include "**/*.adoc"
 				exclude '_*/**'
 			}
+			configurations 'asciidoctorExtensions'
 			options doctype: 'book', eruby: 'erubis'
 			attributes([icons: 'font',
 						idprefix: '',
@@ -96,7 +111,6 @@ public class DocsPlugin implements Plugin<Project> {
 			}
 			into "${project.asciidoctor.outputDir}"
 		}
-
 
 		Task docs = project.tasks.create("docs") {
 			group = 'Documentation'
