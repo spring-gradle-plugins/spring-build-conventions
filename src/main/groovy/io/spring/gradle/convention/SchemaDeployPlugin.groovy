@@ -47,7 +47,7 @@ public class SchemaDeployPlugin implements Plugin<Project> {
 
 						execute "unzip $tempPath*.zip -d $tempPath"
 
-						def extractPath = "/var/www/domains/springsource.org/www/htdocs/autorepo/schema/${name}/${version}/"
+						def extractPath = "/var/www/domains/spring.io/docs/htdocs/autorepo/schema/${name}/${version}/"
 
 						execute "rm -rf $extractPath"
 						execute "mkdir -p $extractPath"
