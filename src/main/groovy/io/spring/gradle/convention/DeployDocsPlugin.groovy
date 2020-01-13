@@ -65,6 +65,7 @@ public class DeployDocsPlugin implements Plugin<Project> {
 						execute "rm -rf $extractPath"
 						execute "mkdir -p $extractPath"
 						execute "mv $tempPath/docs/* $extractPath"
+						execute "chmod -R g+w $extractPath"
 					}
 				}
 			}

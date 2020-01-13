@@ -54,6 +54,7 @@ public class SchemaDeployPlugin implements Plugin<Project> {
 						execute "rm -f $tempPath*.zip"
 						execute "rm -rf $extractPath*"
 						execute "mv $tempPath/* $extractPath"
+						execute "chmod -R g+w $extractPath"
 					}
 				}
 			}
