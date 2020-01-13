@@ -60,7 +60,7 @@ public class DeployDocsPlugin implements Plugin<Project> {
 
 						execute "unzip $tempPath*.zip -d $tempPath"
 
-						def extractPath = "/var/www/domains/springsource.org/www/htdocs/autorepo/docs/${name}/${version}/"
+						def extractPath = "/var/www/domains/spring.io/docs/htdocs/autorepo/docs/${name}/${version}/"
 
 						execute "rm -rf $extractPath"
 						execute "mkdir -p $extractPath"
