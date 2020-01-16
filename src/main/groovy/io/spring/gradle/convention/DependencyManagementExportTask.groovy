@@ -1,7 +1,9 @@
 package io.spring.gradle.convention
 
 import org.gradle.api.Project
-import org.gradle.api.artifacts.component.ModuleComponentSelector;
+import org.gradle.api.artifacts.component.ModuleComponentSelector
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,7 +19,13 @@ import org.gradle.api.tasks.TaskAction;
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension;
 
 public class DependencyManagementExportTask extends DefaultTask {
+	@Internal
 	def projects;
+
+	@Input
+	String getProjectNames() {
+		return projects*.name
+	}
 
 	@TaskAction
 	public void dependencyManagementExport() throws IOException {

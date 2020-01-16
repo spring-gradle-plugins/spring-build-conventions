@@ -60,11 +60,10 @@ class ShowcaseITest extends Specification {
 
 		and: 'creates optional dependencies correctly'
 		pomText.replaceAll('\\s','').contains("""<dependency>
-		<groupId>ch.qos.logback</groupId>
-		<artifactId>logback-classic</artifactId>
-		<scope>compile</scope>
-		<optional>true</optional>
-		<version>1.1.9</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+			<version>4.3.6.RELEASE</version>
 		</dependency>""".replaceAll('\\s',''))
 
 		and: 'adds author'

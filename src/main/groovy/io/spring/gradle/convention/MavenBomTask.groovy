@@ -2,15 +2,23 @@ package io.spring.gradle.convention
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
 public class MavenBomTask extends DefaultTask {
 
+	@Internal
 	Set<Project> projects = []
 
 	@OutputFile
 	File bomFile
+
+	@Input
+	Set<String> getProjectNames() {
+		return projects*.name as Set
+	}
 
 	public MavenBomTask() {
 		this.group = "Generate"
