@@ -36,7 +36,7 @@ public class SpringSampleWarPlugin extends SpringSamplePlugin {
 		pluginManager.apply("org.gretty");
 
 		project.gretty {
-			servletContainer = 'tomcat8'
+			servletContainer = 'tomcat85'
 			contextPath = '/'
 			fileLogEnabled = false
 		}
