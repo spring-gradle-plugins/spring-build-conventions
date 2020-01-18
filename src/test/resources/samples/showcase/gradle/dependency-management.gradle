@@ -1,5 +1,3 @@
-dependencyManagement {
-	imports {
-		mavenBom 'io.spring.platform:platform-bom:Brussels-RELEASE'
-	}
+dependencies {
+	management platform('io.spring.platform:platform-bom:Brussels-RELEASE')
 }

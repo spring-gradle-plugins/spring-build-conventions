@@ -32,6 +32,7 @@ class SpringDependencyManagementConventionPlugin implements Plugin<Project> {
 
 	@Override
 	void apply(Project project) {
+		project.getPluginManager().apply(ManagementConfigurationPlugin)
 		project.getPluginManager().apply(DependencyManagementPlugin)
 		project.dependencyManagement {
 			resolutionStrategy {
