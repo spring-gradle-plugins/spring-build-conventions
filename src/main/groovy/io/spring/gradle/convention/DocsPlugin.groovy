@@ -1,5 +1,6 @@
 package io.spring.gradle.convention
 
+import org.asciidoctor.gradle.jvm.AsciidoctorJExtension
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -26,6 +27,8 @@ public class DocsPlugin implements Plugin<Project> {
 
 		String projectName = Utils.getProjectName(project);
 		String pdfFilename = projectName + "-reference.pdf";
+
+		project.getExtensions().getByType(AsciidoctorJExtension.class).fatalWarnings(".*");
 
 		Task docsZip = project.tasks.create('docsZip', Zip) {
 			dependsOn 'api', 'asciidoctor'

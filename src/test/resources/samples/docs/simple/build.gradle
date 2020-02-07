@@ -3,7 +3,7 @@ plugins {
 	id 'java'
 }
 
-asciidoctor {
+asciidoctorj {
 	attributes \
 		'build-gradle': project.buildFile,
 		'sourcedir': project.sourceSets.main.java.srcDirs[0],
