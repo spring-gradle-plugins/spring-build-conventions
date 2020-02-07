@@ -60,7 +60,7 @@ public class DocsPlugin implements Plugin<Project> {
 		}
 
 		project.dependencies {
-			asciidoctorExtensions 'io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.3.0.RELEASE'
+			asciidoctorExtensions 'io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.4.0.RELEASE'
 		}
 
 		def docResourcesVersion = "0.1.3.RELEASE"
