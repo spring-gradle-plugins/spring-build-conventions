@@ -22,6 +22,7 @@ import spock.lang.Specification
 
 import java.util.zip.ZipFile
 
+import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class DocsPluginITest extends Specification {
@@ -43,5 +44,14 @@ class DocsPluginITest extends Specification {
 		def names = new ZipFile(zip).entries()*.name
 		names.contains("docs/reference/html5/index.html")
 		names.contains("docs/reference/pdf/simple-reference.pdf")
+	}
+
+	def "missing attribute fails"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/docs/missing-attribute/")
+				.withArguments(':asciidoctor')
+				.buildAndFail();
+		then:
+		result.task(":asciidoctor").outcome == FAILED
 	}
 }
