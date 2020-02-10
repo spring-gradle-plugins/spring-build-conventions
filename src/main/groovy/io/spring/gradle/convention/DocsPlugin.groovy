@@ -1,6 +1,6 @@
 package io.spring.gradle.convention
 
-import org.asciidoctor.gradle.jvm.AsciidoctorJExtension
+import org.asciidoctor.gradle.jvm.AbstractAsciidoctorTask
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -22,13 +22,22 @@ public class DocsPlugin implements Plugin<Project> {
 		PluginManager pluginManager = project.getPluginManager();
 		pluginManager.apply("org.asciidoctor.jvm.convert");
 		pluginManager.apply("org.asciidoctor.jvm.pdf");
+		pluginManager.apply(AsciidoctorConventionPlugin);
 		pluginManager.apply(DeployDocsPlugin);
 		pluginManager.apply(JavadocApiPlugin);
 
 		String projectName = Utils.getProjectName(project);
 		String pdfFilename = projectName + "-reference.pdf";
 
-		project.getExtensions().getByType(AsciidoctorJExtension.class).fatalWarnings(".*");
+		project.tasks.withType(AbstractAsciidoctorTask) { t ->
+			project.configure(t) {
+				sources {
+					include "**/*.adoc"
+					exclude '_*/**'
+				}
+			}
+		}
+
 
 		Task docsZip = project.tasks.create('docsZip', Zip) {
 			dependsOn 'api', 'asciidoctor'
@@ -52,76 +61,6 @@ public class DocsPlugin implements Plugin<Project> {
 			}
 			into 'docs'
 			duplicatesStrategy 'exclude'
-		}
-
-		project.repositories {
-		  maven { url 'https://repo.spring.io/plugins-release' }
-		}
-
-		project.configurations {
-			asciidoctorExtensions
-		}
-
-		project.dependencies {
-			asciidoctorExtensions 'io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.4.0.RELEASE'
-		}
-
-		def docResourcesVersion = "0.1.3.RELEASE"
-
-		final Configuration config = project.getConfigurations().create("docResources");
-		config.defaultDependencies(new Action<DependencySet>() {
-			public void execute(DependencySet dependencies) {
-				dependencies.add(project.getDependencies().create("io.spring.docresources:spring-doc-resources:${docResourcesVersion}@zip"));
-			}
-		});
-
-		project.tasks.asciidoctor {
-			dependsOn 'assembleDocs', 'syncDocumentationSource'
-			sourceDir "${project.buildDir}/work/docs/asciidoc/"
-			sources {
-				include "**/*.adoc"
-				exclude '_*/**'
-			}
-			configurations 'asciidoctorExtensions'
-			options doctype: 'book', eruby: 'erubis'
-			attributes([icons: 'font',
-						idprefix: '',
-						idseparator: '-',
-						docinfo: 'shared',
-						revnumber: project.version,
-						sectanchors: '',
-						sectnums: '',
-						'source-highlighter': 'highlight.js',
-						highlightjsdir: 'js/highlight',
-						'highlightjs-theme': 'github',
-						stylesheet: 'css/spring.css',
-						"linkcss": true,
-						'spring-version': project.version])
-			baseDirFollowsSourceDir()
-		}
-
-		project.tasks.asciidoctorPdf {
-			options doctype: 'book', eruby: 'erubis'
-			sources {
-				include "**/*.adoc"
-				exclude '_*/**'
-			}
-			baseDirFollowsSourceDir()
-		}
-
-		Task assembleDocs = project.tasks.create("assembleDocs", Sync.class) {
-			from {
-				project.configurations.docResources.collect { project.zipTree(it) }
-			}
-			from "src/docs/asciidoc"
-			into "${project.asciidoctor.sourceDir}/"
-		}
-
-		Task syncDocumentationSource = project.tasks.create("syncDocumentationSource", Sync.class) {
-			from {
-				project.configurations.docResources.collect { project.zipTree(it) }
-			}
-			into "${project.asciidoctor.outputDir}"
 		}
 
 		Task docs = project.tasks.create("docs") {

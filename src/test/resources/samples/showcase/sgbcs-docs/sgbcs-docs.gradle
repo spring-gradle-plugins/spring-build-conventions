@@ -1,6 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'io.spring.convention.docs'
 
+version = "1.0.0.BUILD-SNAPSHOT"
+
 asciidoctorj {
 	attributes \
 		'build-gradle': project.buildFile,
