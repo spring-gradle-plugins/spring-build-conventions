@@ -54,4 +54,13 @@ class DocsPluginITest extends Specification {
 		then:
 		result.task(":asciidoctor").outcome == FAILED
 	}
+
+	def "missing include"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/docs/missing-include/")
+				.withArguments(':asciidoctor')
+				.buildAndFail();
+		then:
+		result.task(":asciidoctor").outcome == FAILED
+	}
 }
