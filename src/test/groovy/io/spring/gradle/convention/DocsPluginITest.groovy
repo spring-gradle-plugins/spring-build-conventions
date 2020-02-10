@@ -63,4 +63,13 @@ class DocsPluginITest extends Specification {
 		then:
 		result.task(":asciidoctor").outcome == FAILED
 	}
+
+	def "missing cross reference"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/docs/missing-cross-reference/")
+				.withArguments(':asciidoctor')
+				.buildAndFail();
+		then:
+		result.task(":asciidoctor").outcome == FAILED
+	}
 }
