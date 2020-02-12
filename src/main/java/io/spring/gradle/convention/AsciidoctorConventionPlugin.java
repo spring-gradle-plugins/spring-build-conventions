@@ -87,8 +87,14 @@ public class AsciidoctorConventionPlugin implements Plugin<Project> {
 				asciidoctorTask.baseDirFollowsSourceDir();
 				asciidoctorTask.resources(new Action<CopySpec>() {
 					@Override
-					public void execute(CopySpec copySpec) {
-						copySpec.from(unzipResources);
+					public void execute(CopySpec resourcesSpec) {
+						resourcesSpec.from(unzipResources);
+						resourcesSpec.from(asciidoctorTask.getSourceDir(), new Action<CopySpec>() {
+							@Override
+							public void execute(CopySpec resourcesSrcDirSpec) {
+								resourcesSrcDirSpec.include("images/**");
+							}
+						});
 					}
 				});
 				if (asciidoctorTask instanceof AsciidoctorTask) {

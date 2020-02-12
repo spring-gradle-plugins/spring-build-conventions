@@ -46,6 +46,16 @@ class DocsPluginITest extends Specification {
 		names.contains("docs/reference/pdf/simple-reference.pdf")
 	}
 
+	def "asciidoc copies images"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/docs/simple/")
+				.withArguments('asciidoctor')
+				.build();
+		then:
+		result.task(":asciidoctor").outcome == SUCCESS
+		new File(testKit.getRootDir(), "build/docs/asciidoc/images").exists()
+	}
+
 	def "missing attribute fails"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/docs/missing-attribute/")
