@@ -22,25 +22,25 @@ import org.asciidoctor.gradle.jvm.AsciidoctorJExtension;
 import org.asciidoctor.gradle.jvm.AsciidoctorJPlugin;
 import org.asciidoctor.gradle.jvm.AsciidoctorTask;
 import org.gradle.api.Action;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
 import org.gradle.api.file.CopySpec;
-import org.gradle.api.file.FileCollection;
-import org.gradle.api.tasks.InputFiles;
-import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.file.FileTree;
+import org.gradle.api.tasks.Sync;
 
 import java.io.File;
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 /**
  * Conventions that are applied in the presence of the {@link AsciidoctorJPlugin}. When
@@ -78,7 +78,7 @@ public class AsciidoctorConventionPlugin implements Plugin<Project> {
 		project.getPlugins().withType(AsciidoctorJPlugin.class, (asciidoctorPlugin) -> {
 			createDefaultAsciidoctorRepository(project);
 			makeAllWarningsFatal(project);
-			UnzipDocumentationResources unzipResources = createUnzipDocumentationResourcesTask(project);
+			Sync unzipResources = createUnzipDocumentationResourcesTask(project);
 			project.getTasks().withType(AbstractAsciidoctorTask.class, (asciidoctorTask) -> {
 				asciidoctorTask.dependsOn(unzipResources);
 				configureExtensions(project, asciidoctorTask);
@@ -137,14 +137,32 @@ public class AsciidoctorConventionPlugin implements Plugin<Project> {
 		asciidoctorTask.configurations(extensionsConfiguration);
 	}
 
-	private UnzipDocumentationResources createUnzipDocumentationResourcesTask(Project project) {
+	private Sync createUnzipDocumentationResourcesTask(Project project) {
 		Configuration documentationResources = project.getConfigurations().maybeCreate("documentationResources");
 		documentationResources.getDependencies()
 				.add(project.getDependencies().create("io.spring.docresources:spring-doc-resources:0.1.3.RELEASE"));
-		UnzipDocumentationResources unzipResources = project.getTasks().create("unzipDocumentationResources",
-				UnzipDocumentationResources.class);
-		unzipResources.setResources(documentationResources);
-		unzipResources.setOutputDir(new File(project.getBuildDir(), "docs/resources"));
+		Sync unzipResources = project.getTasks().create("unzipDocumentationResources",
+				Sync.class, new Action<Sync>() {
+					@Override
+			public void execute(Sync sync) {
+				sync.dependsOn(documentationResources);
+				sync.from(new Callable<List<FileTree>>() {
+					@Override
+					public List<FileTree> call() throws Exception {
+						List<FileTree> result = new ArrayList<>();
+						documentationResources.getAsFileTree().forEach(new Consumer<File>() {
+							@Override
+							public void accept(File file) {
+								result.add(project.zipTree(file));
+							}
+						});
+						return result;
+					}
+				});
+				File destination = new File(project.getBuildDir(), "docs/resources");
+				sync.into(project.relativePath(destination));
+			}
+		});
 		return unzipResources;
 	}
 
@@ -185,44 +203,5 @@ public class AsciidoctorConventionPlugin implements Plugin<Project> {
 		attributes.put("sectnums", "");
 		attributes.put("today-year", LocalDate.now().getYear());
 		asciidoctorTask.attributes(attributes);
-	}
-
-	/**
-	 * {@link Task} for unzipping the documentation resources.
-	 */
-	public static class UnzipDocumentationResources extends DefaultTask {
-
-		private FileCollection resources;
-
-		private File outputDir;
-
-		@InputFiles
-		public FileCollection getResources() {
-			return this.resources;
-		}
-
-		public void setResources(FileCollection resources) {
-			this.resources = resources;
-		}
-
-		@OutputDirectory
-		public File getOutputDir() {
-			return this.outputDir;
-		}
-
-		public void setOutputDir(File outputDir) {
-			this.outputDir = outputDir;
-		}
-
-		@TaskAction
-		void syncDocumentationResources() {
-			getProject().sync((copySpec) -> {
-				copySpec.into(this.outputDir);
-				for (File resource : this.resources) {
-					copySpec.from(getProject().zipTree(resource));
-				}
-			});
-		}
-
 	}
 }
