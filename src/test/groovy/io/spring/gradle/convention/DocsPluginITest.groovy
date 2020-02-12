@@ -56,6 +56,16 @@ class DocsPluginITest extends Specification {
 		new File(testKit.getRootDir(), "build/docs/asciidoc/images").exists()
 	}
 
+	def "asciidoc docinfo from resources used"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/docs/simple/")
+				.withArguments('asciidoctor')
+				.build();
+		then:
+		result.task(":asciidoctor").outcome == SUCCESS
+		new File(testKit.getRootDir(), "build/docs/asciidoc/index.html").getText().contains("""<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>""")
+	}
+
 	def "missing attribute fails"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/docs/missing-attribute/")

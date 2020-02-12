@@ -85,6 +85,7 @@ public class AsciidoctorConventionPlugin implements Plugin<Project> {
 				configureCommonAttributes(project, asciidoctorTask);
 				configureOptions(asciidoctorTask);
 				asciidoctorTask.baseDirFollowsSourceDir();
+				asciidoctorTask.useIntermediateWorkDir();
 				asciidoctorTask.resources(new Action<CopySpec>() {
 					@Override
 					public void execute(CopySpec resourcesSpec) {
@@ -92,7 +93,10 @@ public class AsciidoctorConventionPlugin implements Plugin<Project> {
 						resourcesSpec.from(asciidoctorTask.getSourceDir(), new Action<CopySpec>() {
 							@Override
 							public void execute(CopySpec resourcesSrcDirSpec) {
-								resourcesSrcDirSpec.include("images/**");
+								// https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/523
+								// For now copy the entire sourceDir over so that include files are
+								// available in the intermediateWorkDir
+								// resourcesSrcDirSpec.include("images/**");
 							}
 						});
 					}
