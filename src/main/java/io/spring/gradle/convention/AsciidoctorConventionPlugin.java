@@ -131,7 +131,7 @@ public class AsciidoctorConventionPlugin implements Plugin<Project> {
 		extensionsConfiguration.defaultDependencies(new Action<DependencySet>() {
 			@Override
 			public void execute(DependencySet dependencies) {
-				dependencies.add(project.getDependencies().create("io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.4.0.RELEASE"));
+				dependencies.add(project.getDependencies().create("io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.4.2.RELEASE"));
 			}
 		});
 		asciidoctorTask.configurations(extensionsConfiguration);
