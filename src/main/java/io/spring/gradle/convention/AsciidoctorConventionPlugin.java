@@ -140,7 +140,7 @@ public class AsciidoctorConventionPlugin implements Plugin<Project> {
 	private Sync createUnzipDocumentationResourcesTask(Project project) {
 		Configuration documentationResources = project.getConfigurations().maybeCreate("documentationResources");
 		documentationResources.getDependencies()
-				.add(project.getDependencies().create("io.spring.docresources:spring-doc-resources:0.1.3.RELEASE"));
+				.add(project.getDependencies().create("io.spring.docresources:spring-doc-resources:0.2.1.RELEASE"));
 		Sync unzipResources = project.getTasks().create("unzipDocumentationResources",
 				Sync.class, new Action<Sync>() {
 					@Override
