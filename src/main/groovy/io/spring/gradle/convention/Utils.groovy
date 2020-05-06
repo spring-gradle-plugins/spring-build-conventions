@@ -14,7 +14,7 @@ public class Utils {
 
 	static boolean isSnapshot(Project project) {
 		String projectVersion = projectVersion(project)
-		return projectVersion.matches('^.*[.-]BUILD-SNAPSHOT$')
+		return projectVersion.matches('^.*([.-]BUILD)?-SNAPSHOT$')
 	}
 
 	static boolean isMilestone(Project project) {
@@ -23,8 +23,7 @@ public class Utils {
 	}
 
 	static boolean isRelease(Project project) {
-		String projectVersion = projectVersion(project)
-		return projectVersion.matches('^.*[.-]RELEASE$') || projectVersion.matches('^.*-SR\\d+$')
+		return !(isSnapshot(project) || isMilestone(project))
 	}
 
 	private static String projectVersion(Project project) {

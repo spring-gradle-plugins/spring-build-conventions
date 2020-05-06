@@ -45,6 +45,13 @@ public class UtilsTest {
 	}
 
 	@Test
+	public void isSnapshotValidWithNoBuild() {
+		when(project.getVersion()).thenReturn("1.0.0-SNAPSHOT");
+
+		assertThat(Utils.isSnapshot(project)).isTrue();
+	}
+
+	@Test
 	public void isSnapshotValidWithDash() {
 		when(project.getVersion()).thenReturn("Theme-BUILD-SNAPSHOT");
 
@@ -73,6 +80,13 @@ public class UtilsTest {
 	}
 
 	@Test
+	public void isMilestoneValidWithNumberDash() {
+		when(project.getVersion()).thenReturn("1.0.0-M1");
+
+		assertThat(Utils.isMilestone(project)).isTrue();
+	}
+
+	@Test
 	public void isMilestoneInvalid() {
 		when(project.getVersion()).thenReturn("1.0.0.M");
 
@@ -82,6 +96,13 @@ public class UtilsTest {
 	@Test
 	public void isReleaseCandidateValidWithDot() {
 		when(project.getVersion()).thenReturn("1.0.0.RC1");
+
+		assertThat(Utils.isMilestone(project)).isTrue();
+	}
+
+	@Test
+	public void isReleaseCandidateValidWithNumberDash() {
+		when(project.getVersion()).thenReturn("1.0.0-RC1");
 
 		assertThat(Utils.isMilestone(project)).isTrue();
 	}
@@ -108,6 +129,13 @@ public class UtilsTest {
 	}
 
 	@Test
+	public void isReleaseValidWithNoRelease() {
+		when(project.getVersion()).thenReturn("1.0.0");
+
+		assertThat(Utils.isRelease(project)).isTrue();
+	}
+
+	@Test
 	public void isReleaseValidWithDash() {
 		when(project.getVersion()).thenReturn("Theme-RELEASE");
 
@@ -120,12 +148,4 @@ public class UtilsTest {
 
 		assertThat(Utils.isRelease(project)).isTrue();
 	}
-
-	@Test
-	public void isServiceReleaseInvalid() {
-		when(project.getVersion()).thenReturn("Theme.SR1");
-
-		assertThat(Utils.isRelease(project)).isFalse();
-	}
-
 }
