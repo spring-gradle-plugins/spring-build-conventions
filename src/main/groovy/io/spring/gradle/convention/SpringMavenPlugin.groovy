@@ -61,7 +61,8 @@ public class SpringMavenPlugin implements Plugin<Project> {
 			inlineDependencyManagement(project);
 		}
 
-		if(project.hasProperty("signing.keyId") && Utils.isRelease(project)) {
+		def hasSigningKey = project.hasProperty("signing.keyId") || project.findProperty("signingKey")
+		if(hasSigningKey && Utils.isRelease(project)) {
 			sign(project)
 		}
 
@@ -135,6 +136,14 @@ public class SpringMavenPlugin implements Plugin<Project> {
 
 		project.signing {
 			required { project.gradle.taskGraph.hasTask("uploadArchives") }
+			def signingKeyId = project.findProperty("signingKeyId")
+			def signingKey = project.findProperty("signingKey")
+			def signingPassword = project.findProperty("signingPassword")
+			if (signingKeyId) {
+				useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+			} else if (signingKey) {
+				useInMemoryPgpKeys(signingKey, signingPassword)
+			}
 			sign project.configurations.archives
 		}
 	}

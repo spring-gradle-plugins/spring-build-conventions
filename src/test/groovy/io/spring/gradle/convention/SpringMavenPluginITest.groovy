@@ -46,6 +46,22 @@ class SpringMavenPluginITest extends Specification {
 		</dependency>""".replaceAll('\\s',''))
 	}
 
+	def "signArchives when in memory"() {
+		when:
+		BuildResult result = testKit.withProjectResource("samples/maven/signing")
+				.withArguments('signArchives')
+				.withEnvironment(["ORG_GRADLE_PROJECT_signingKey" : signingKey,
+								  "ORG_GRADLE_PROJECT_signingPassword" : "password"])
+				.forwardOutput()
+				.build();
+		then:
+		result.output.contains("SUCCESS")
+		File jar = new File(testKit.getRootDir(), 'build/libs/signing-1.0.0.RELEASE.jar')
+		jar.exists()
+		File signature = new File("${jar.absolutePath}.asc")
+		signature.exists()
+	}
+
 	def "upload"() {
 		when:
 		BuildResult result = testKit.withProjectResource("samples/maven/upload")
@@ -66,4 +82,7 @@ class SpringMavenPluginITest extends Specification {
 			</dependency>""".replaceAll('\\s',''))
 	}
 
+	def getSigningKey() {
+		getClass().getResource("/test-private.pgp").text
+	}
 }
