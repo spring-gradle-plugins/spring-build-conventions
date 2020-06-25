@@ -33,6 +33,8 @@ public class DeployDocsPlugin implements Plugin<Project> {
 			docs {
 				role 'docs'
 				host = 'docs.af.pivotal.io'
+				retryCount = 5 // retry 5 times (default is 0)
+				retryWaitSec = 10 // wait 10 seconds between retries (default is 0)
 				user = project.findProperty('deployDocsSshUsername')
 				if(project.hasProperty('deployDocsSshKeyPath')) {
 					identity = project.file(project.findProperty('deployDocsSshKeyPath'))
