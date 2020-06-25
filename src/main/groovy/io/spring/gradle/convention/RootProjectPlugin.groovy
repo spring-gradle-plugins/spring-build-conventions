@@ -65,7 +65,13 @@ class RootProjectPlugin implements Plugin<Project> {
 			project.ext.nexusPassword = project.ossrhPassword
 			project.getPluginManager().apply("io.codearte.nexus-staging")
 			finalizeDeployArtifacts.dependsOn project.tasks.closeAndReleaseRepository
-			project.nexusStaging.packageGroup = 'org.springframework'
+			project.nexusStaging {
+				packageGroup = 'org.springframework'
+
+				// try for 5 minutes total
+				numberOfRetries = 60 // default is 20
+				delayBetweenRetriesInMillis = 5000 // default is 2000
+			}
 		}
 	}
 
