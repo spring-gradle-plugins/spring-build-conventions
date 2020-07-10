@@ -36,8 +36,10 @@ public class DeployDocsPlugin implements Plugin<Project> {
 				retryCount = 5 // retry 5 times (default is 0)
 				retryWaitSec = 10 // wait 10 seconds between retries (default is 0)
 				user = project.findProperty('deployDocsSshUsername')
-				if(project.hasProperty('deployDocsSshKeyPath')) {
+				if (project.hasProperty('deployDocsSshKeyPath')) {
 					identity = project.file(project.findProperty('deployDocsSshKeyPath'))
+				} else if (project.hasProperty('deployDocsSshKey')) {
+					identity = project.findProperty('deployDocsSshKey')
 				}
 				if(project.hasProperty('deployDocsSshPassphrase')) {
 					passphrase = project.findProperty('deployDocsSshPassphrase')
