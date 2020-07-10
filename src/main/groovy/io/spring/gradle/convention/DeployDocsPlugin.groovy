@@ -34,8 +34,10 @@ public class DeployDocsPlugin implements Plugin<Project> {
 				role 'docs'
 				host = 'docs-ip.spring.io'
 				user = project.findProperty('deployDocsSshUsername')
-				if(project.hasProperty('deployDocsSshKeyPath')) {
+				if (project.hasProperty('deployDocsSshKeyPath')) {
 					identity = project.file(project.findProperty('deployDocsSshKeyPath'))
+				} else if (project.hasProperty('deployDocsSshKey')) {
+					identity = project.findProperty('deployDocsSshKey')
 				}
 				if(project.hasProperty('deployDocsSshPassphrase')) {
 					passphrase = project.findProperty('deployDocsSshPassphrase')
