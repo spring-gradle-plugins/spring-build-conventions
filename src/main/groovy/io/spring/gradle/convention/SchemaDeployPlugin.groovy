@@ -23,6 +23,8 @@ public class SchemaDeployPlugin implements Plugin<Project> {
 				user = project.findProperty('deployDocsSshUsername')
 				if(project.hasProperty('deployDocsSshKeyPath')) {
 					identity = project.file(project.findProperty('deployDocsSshKeyPath'))
+				} else if (project.hasProperty('deployDocsSshKey')) {
+					identity = project.findProperty('deployDocsSshKey')
 				}
 				if(project.hasProperty('deployDocsSshPassphrase')) {
 					passphrase = project.findProperty('deployDocsSshPassphrase')
