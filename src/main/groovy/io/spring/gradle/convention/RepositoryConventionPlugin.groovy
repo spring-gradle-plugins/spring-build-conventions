@@ -43,7 +43,16 @@ class RepositoryConventionPlugin implements Plugin<Project> {
 			if (forceMavenRepositories?.contains('local')) {
 				mavenLocal()
 			}
-			maven { url mavenUrl }
+			maven {
+				name = 'artifactory'
+				if (project.hasProperty('artifactoryUsername')) {
+					credentials {
+						username project.artifactoryUsername
+						password project.artifactoryPassword
+					}
+				}
+				url = mavenUrl
+			}
 		}
 
 	}
