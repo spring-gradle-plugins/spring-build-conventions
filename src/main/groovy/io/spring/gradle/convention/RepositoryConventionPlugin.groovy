@@ -30,18 +30,24 @@ class RepositoryConventionPlugin implements Plugin<Project> {
 
 		String mavenUrl
 		if (isImplicitSnapshotRepository || forceMavenRepositories?.contains('snapshot')) {
-			mavenUrl = 'https://repo.spring.io/libs-snapshot/'
+			mavenUrl = 'https://repo.spring.io/snapshot/'
 		}
 		else if (isImplicitMilestoneRepository || forceMavenRepositories?.contains('milestone')) {
-			mavenUrl = 'https://repo.spring.io/libs-milestone/'
+			mavenUrl = 'https://repo.spring.io/milestone/'
 		}
 		else {
-			mavenUrl = 'https://repo.spring.io/libs-release/'
+			mavenUrl = 'https://repo.spring.io/release/'
 		}
 
 		project.repositories {
 			if (forceMavenRepositories?.contains('local')) {
 				mavenLocal()
+			}
+			mavenCentral()
+			jcenter() {
+				content {
+					includeGroup "org.gretty"
+				}
 			}
 			maven {
 				name = 'artifactory'
