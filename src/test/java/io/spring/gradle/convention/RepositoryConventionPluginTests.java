@@ -18,6 +18,7 @@ package io.spring.gradle.convention;
 
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
+import org.gradle.api.artifacts.repositories.ArtifactRepository;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -44,22 +45,7 @@ public class RepositoryConventionPluginTests {
 		this.project.getPluginManager().apply(RepositoryConventionPlugin.class);
 
 		RepositoryHandler repositories = this.project.getRepositories();
-		assertRepositoriesWithSpring(repositories, "release");
-	}
-
-	private void assertRepositoriesWithSpring(RepositoryHandler repositories, String repositoryName) {
-		assertThat(repositories).hasSize(3);
-		assertThat(((MavenArtifactRepository) repositories.get(0)).getUrl().toString())
-				.isEqualTo("https://repo.maven.apache.org/maven2/");
-		assertThat(((MavenArtifactRepository) repositories.get(1)).getUrl().toString())
-				.isEqualTo("https://jcenter.bintray.com/");
-		assertThat(((MavenArtifactRepository) repositories.get(2)).getUrl().toString())
-				.isEqualTo("https://repo.spring.io/" + repositoryName + "/");
-	}
-
-	private void assertRepositoriesWithLocalAndSpring(RepositoryHandler repositories, String repositoryName) {
-		assertThat(repositories).hasSize(4);
-		assertThat((repositories.get(0)).getName()).isEqualTo("MavenLocal");
+		assertReleaseRepository(repositories);
 	}
 
 	@Test
@@ -68,7 +54,7 @@ public class RepositoryConventionPluginTests {
 		this.project.getPluginManager().apply(RepositoryConventionPlugin.class);
 
 		RepositoryHandler repositories = this.project.getRepositories();
-		assertRepositoriesWithSpring(repositories, "milestone");
+		assertMilestoneRepository(repositories); // milestone
 	}
 
 	@Test
@@ -77,7 +63,7 @@ public class RepositoryConventionPluginTests {
 		this.project.getPluginManager().apply(RepositoryConventionPlugin.class);
 
 		RepositoryHandler repositories = this.project.getRepositories();
-		assertRepositoriesWithSpring(repositories, "snapshot");
+		assertSnapshotRepository(repositories);
 	}
 
 	@Test
@@ -88,7 +74,7 @@ public class RepositoryConventionPluginTests {
 		this.project.getPluginManager().apply(RepositoryConventionPlugin.class);
 
 		RepositoryHandler repositories = this.project.getRepositories();
-		assertRepositoriesWithSpring(repositories, "release");
+		assertReleaseRepository(repositories);
 	}
 
 	@Test
@@ -99,7 +85,7 @@ public class RepositoryConventionPluginTests {
 		this.project.getPluginManager().apply(RepositoryConventionPlugin.class);
 
 		RepositoryHandler repositories = this.project.getRepositories();
-		assertRepositoriesWithSpring(repositories, "milestone");
+		assertMilestoneRepository(repositories);
 	}
 
 	@Test
@@ -110,7 +96,7 @@ public class RepositoryConventionPluginTests {
 		this.project.getPluginManager().apply(RepositoryConventionPlugin.class);
 
 		RepositoryHandler repositories = this.project.getRepositories();
-		assertRepositoriesWithSpring(repositories, "snapshot");
+		assertSnapshotRepository(repositories);
 	}
 
 	@Test
@@ -121,7 +107,8 @@ public class RepositoryConventionPluginTests {
 		this.project.getPluginManager().apply(RepositoryConventionPlugin.class);
 
 		RepositoryHandler repositories = this.project.getRepositories();
-		assertRepositoriesWithLocalAndSpring(repositories, "release");
+		assertThat(repositories).hasSize(4);
+		assertThat((repositories.get(0)).getName()).isEqualTo("MavenLocal");
 	}
 
 	@Test
@@ -132,7 +119,40 @@ public class RepositoryConventionPluginTests {
 		this.project.getPluginManager().apply(RepositoryConventionPlugin.class);
 
 		RepositoryHandler repositories = this.project.getRepositories();
-		assertRepositoriesWithLocalAndSpring(repositories, "milestone");
+		assertThat(repositories).hasSize(5);
+		assertThat((repositories.get(0)).getName()).isEqualTo("MavenLocal");
+	}
+
+	private void assertSnapshotRepository(RepositoryHandler repositories) {
+		assertThat(repositories).extracting(ArtifactRepository::getName).hasSize(5);
+		assertThat(((MavenArtifactRepository) repositories.get(0)).getUrl().toString())
+				.isEqualTo("https://repo.maven.apache.org/maven2/");
+		assertThat(((MavenArtifactRepository) repositories.get(1)).getUrl().toString())
+				.isEqualTo("https://jcenter.bintray.com/");
+		assertThat(((MavenArtifactRepository) repositories.get(2)).getUrl().toString())
+				.isEqualTo("https://repo.spring.io/snapshot/");
+		assertThat(((MavenArtifactRepository) repositories.get(3)).getUrl().toString())
+				.isEqualTo("https://repo.spring.io/milestone/");
+	}
+
+	private void assertMilestoneRepository(RepositoryHandler repositories) {
+		assertThat(repositories).extracting(ArtifactRepository::getName).hasSize(4);
+		assertThat(((MavenArtifactRepository) repositories.get(0)).getUrl().toString())
+				.isEqualTo("https://repo.maven.apache.org/maven2/");
+		assertThat(((MavenArtifactRepository) repositories.get(1)).getUrl().toString())
+				.isEqualTo("https://jcenter.bintray.com/");
+		assertThat(((MavenArtifactRepository) repositories.get(2)).getUrl().toString())
+				.isEqualTo("https://repo.spring.io/milestone/");
+	}
+
+	private void assertReleaseRepository(RepositoryHandler repositories) {
+		assertThat(repositories).extracting(ArtifactRepository::getName).hasSize(3);
+		assertThat(((MavenArtifactRepository) repositories.get(0)).getUrl().toString())
+				.isEqualTo("https://repo.maven.apache.org/maven2/");
+		assertThat(((MavenArtifactRepository) repositories.get(1)).getUrl().toString())
+				.isEqualTo("https://jcenter.bintray.com/");
+		assertThat(((MavenArtifactRepository) repositories.get(2)).getUrl().toString())
+				.isEqualTo("https://repo.spring.io/release/");
 	}
 
 }

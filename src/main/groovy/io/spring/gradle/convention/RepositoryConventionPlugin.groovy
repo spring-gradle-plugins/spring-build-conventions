@@ -27,17 +27,8 @@ class RepositoryConventionPlugin implements Plugin<Project> {
 		boolean isImplicitSnapshotRepository = forceMavenRepositories == null && Utils.isSnapshot(project)
 		boolean isImplicitMilestoneRepository = forceMavenRepositories == null && Utils.isMilestone(project)
 
-
-		String mavenUrl
-		if (isImplicitSnapshotRepository || forceMavenRepositories?.contains('snapshot')) {
-			mavenUrl = 'https://repo.spring.io/snapshot/'
-		}
-		else if (isImplicitMilestoneRepository || forceMavenRepositories?.contains('milestone')) {
-			mavenUrl = 'https://repo.spring.io/milestone/'
-		}
-		else {
-			mavenUrl = 'https://repo.spring.io/release/'
-		}
+		boolean isSnapshot = isImplicitSnapshotRepository || forceMavenRepositories?.contains('snapshot')
+		boolean isMilestone = isImplicitMilestoneRepository || forceMavenRepositories?.contains('milestone')
 
 		project.repositories {
 			if (forceMavenRepositories?.contains('local')) {
@@ -49,18 +40,41 @@ class RepositoryConventionPlugin implements Plugin<Project> {
 					includeGroup "org.gretty"
 				}
 			}
+			if (isSnapshot) {
+				maven {
+					name = 'artifactory-snapshot'
+					if (project.hasProperty('artifactoryUsername')) {
+						credentials {
+							username project.artifactoryUsername
+							password project.artifactoryPassword
+						}
+					}
+					url = 'https://repo.spring.io/snapshot/'
+				}
+			}
+			if (isSnapshot || isMilestone) {
+				maven {
+					name = 'artifactory-milestone'
+					if (project.hasProperty('artifactoryUsername')) {
+						credentials {
+							username project.artifactoryUsername
+							password project.artifactoryPassword
+						}
+					}
+					url = 'https://repo.spring.io/milestone/'
+				}
+			}
 			maven {
-				name = 'artifactory'
+				name = 'artifactory-release'
 				if (project.hasProperty('artifactoryUsername')) {
 					credentials {
 						username project.artifactoryUsername
 						password project.artifactoryPassword
 					}
 				}
-				url = mavenUrl
+				url = 'https://repo.spring.io/release/'
 			}
 		}
-
 	}
 
 }

@@ -114,8 +114,9 @@ public class AsciidoctorConventionPlugin implements Plugin<Project> {
 			public void execute(Project project) {
 				RepositoryHandler repositories = project.getRepositories();
 				if (repositories.isEmpty()) {
+					repositories.mavenCentral();
 					repositories.maven(repo -> {
-						repo.setUrl(URI.create("https://repo.spring.io/libs-release"));
+						repo.setUrl(URI.create("https://repo.spring.io/release"));
 					});
 				}
 			}
