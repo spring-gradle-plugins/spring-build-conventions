@@ -56,10 +56,13 @@ public class SpringIoConventionPlugin implements Plugin<Project> {
 			return
 		}
 		if (platformBomVersion.matches('^.*[.-]BUILD-SNAPSHOT$')) {
-			addMavenRepositoryIfMissing(project,'https://repo.spring.io/libs-snapshot')
+			addMavenRepositoryIfMissing(project,'https://repo.spring.io/snapshot')
+			addMavenRepositoryIfMissing(project,'https://repo.spring.io/milestone')
+			addMavenRepositoryIfMissing(project,'https://repo.spring.io/release')
 		}
 		if (platformBomVersion.matches('^.*[.-]M\\d+$') || platformBomVersion.matches('^.*[.-]RC\\d+$')) {
-			addMavenRepositoryIfMissing(project,'https://repo.spring.io/libs-milestone')
+			addMavenRepositoryIfMissing(project,'https://repo.spring.io/milestone')
+			addMavenRepositoryIfMissing(project,'https://repo.spring.io/release')
 		}
 	}
 
