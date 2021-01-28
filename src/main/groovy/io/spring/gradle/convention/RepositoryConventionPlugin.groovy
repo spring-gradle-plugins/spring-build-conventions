@@ -23,29 +23,54 @@ class RepositoryConventionPlugin implements Plugin<Project> {
 
 	@Override
 	void apply(Project project) {
-		boolean isSnapshot = Utils.isSnapshot(project)
-		boolean isMilestone = Utils.isMilestone(project)
-
 		String[] forceMavenRepositories = ((String) project.findProperty("forceMavenRepositories"))?.split(',')
+		boolean isImplicitSnapshotRepository = forceMavenRepositories == null && Utils.isSnapshot(project)
+		boolean isImplicitMilestoneRepository = forceMavenRepositories == null && Utils.isMilestone(project)
 
-		String mavenUrl
-		if (isSnapshot || forceMavenRepositories?.contains('snapshot')) {
-			mavenUrl = 'https://repo.spring.io/libs-snapshot/'
-		}
-		else if (isMilestone || forceMavenRepositories?.contains('milestone')) {
-			mavenUrl = 'https://repo.spring.io/libs-milestone/'
-		}
-		else {
-			mavenUrl = 'https://repo.spring.io/libs-release/'
-		}
+		boolean isSnapshot = isImplicitSnapshotRepository || forceMavenRepositories?.contains('snapshot')
+		boolean isMilestone = isImplicitMilestoneRepository || forceMavenRepositories?.contains('milestone')
 
 		project.repositories {
 			if (forceMavenRepositories?.contains('local')) {
 				mavenLocal()
 			}
-			maven { url mavenUrl }
+			mavenCentral()
+			jcenter()
+			if (isSnapshot) {
+				maven {
+					name = 'artifactory-snapshot'
+					if (project.hasProperty('artifactoryUsername')) {
+						credentials {
+							username project.artifactoryUsername
+							password project.artifactoryPassword
+						}
+					}
+					url = 'https://repo.spring.io/snapshot/'
+				}
+			}
+			if (isSnapshot || isMilestone) {
+				maven {
+					name = 'artifactory-milestone'
+					if (project.hasProperty('artifactoryUsername')) {
+						credentials {
+							username project.artifactoryUsername
+							password project.artifactoryPassword
+						}
+					}
+					url = 'https://repo.spring.io/milestone/'
+				}
+			}
+			maven {
+				name = 'artifactory-release'
+				if (project.hasProperty('artifactoryUsername')) {
+					credentials {
+						username project.artifactoryUsername
+						password project.artifactoryPassword
+					}
+				}
+				url = 'https://repo.spring.io/release/'
+			}
 		}
-
 	}
 
 }
