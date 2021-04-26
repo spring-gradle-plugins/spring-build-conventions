@@ -35,7 +35,7 @@ public class DeployDocsPlugin implements Plugin<Project> {
 				if (project.hasProperty('deployDocsHost')) {
 					host = project.findProperty('deployDocsHost')
 				} else {
-					host = 'docs.af.pivotal.io'
+					host = 'docs-ip.spring.io'
 				}
 				retryCount = 5 // retry 5 times (default is 0)
 				retryWaitSec = 10 // wait 10 seconds between retries (default is 0)
