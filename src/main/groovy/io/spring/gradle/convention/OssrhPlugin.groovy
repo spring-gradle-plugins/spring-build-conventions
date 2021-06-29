@@ -22,5 +22,20 @@ public class OssrhPlugin implements Plugin<Project> {
 				}
 			}
 		}
+		if(project.hasProperty('ossrhTokenUsername')) {
+			project.uploadArchives {
+				repositories {
+					mavenDeployer {
+						repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+							authentication(userName: project.ossrhTokenUsername, password: project.ossrhTokenPassword)
+						}
+
+						snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+							authentication(userName: project.ossrhTokenUsername, password: project.ossrhTokenPassword)
+						}
+					}
+				}
+			}
+		}
 	}
 }
