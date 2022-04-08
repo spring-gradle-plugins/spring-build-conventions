@@ -32,7 +32,7 @@ public class DeployDocsPlugin implements Plugin<Project> {
 		project.remotes {
 			docs {
 				role 'docs'
-				host = 'docs.af.pivotal.io'
+				host = 'docs-ip.spring.io'
 				user = project.findProperty('deployDocsSshUsername')
 				if(project.hasProperty('deployDocsSshKeyPath')) {
 					identity = project.file(project.findProperty('deployDocsSshKeyPath'))
